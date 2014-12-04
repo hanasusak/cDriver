@@ -482,32 +482,55 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     # ccf corrected counts
     n <-  rowSums(mat.sample.gene.ns.Damage*mat.sample.gene.ns.ccf)
     m <-  ncol(mat.sample.gene.ns.Damage) - n
-    print(n['TP53'])
-    print(m['TP53'])
-    print(gene.mut.if.driver['TP53'])
-    print(gene.notmut.if.driver['TP53'])
-    print(gene.mut.if.passenger['TP53'])
-    print(gene.notmut.if.passenger['TP53'])
-
-    logxpy <- function(lx,ly) max(lx,ly) + log1p(exp(-abs(lx-ly)))
     
+    
+    if (FALSE){
+        logxpy <- function(lx,ly) max(lx,ly) + log1p(exp(-abs(lx-ly)))    
  
-    # A/A+B
-    A <- log(prior.driver) + n[genes]*log(gene.mut.if.driver[genes] )  + m[genes]*log(gene.notmut.if.driver[genes])
-    #A <- log(prior.driver) + n*log(gene.mut.if.driver)  + m*log(gene.notmut.if.driver)
-    print(A['TP53'])
-    B <- log(prior.passenger) + n[genes]*log(gene.mut.if.passenger[genes]) + m[genes]*log(gene.notmut.if.passenger[genes])
-    #B <- log(prior.passenger) + n*log(gene.mut.if.passenger['TP53']) + m*log(gene.notmut.if.passenger['TP53'])
-    print(B['TP53'])
+        # A/A+B
+        lA <- log(prior.driver) + n[genes]*log(gene.mut.if.driver[genes] ) + m[genes]*log(gene.notmut.if.driver[genes])
+        #A <- log(prior.driver) + n*log(gene.mut.if.driver)  + m*log(gene.notmut.if.driver)
+        #print(lA['TP53'])
+        lB <- log(prior.passenger) + n[genes]*log(gene.mut.if.passenger[genes]) + m[genes]*log(gene.notmut.if.passenger[genes])
+        #B <- log(prior.passenger) + n*log(gene.mut.if.passenger['TP53']) + m*log(gene.notmut.if.passenger['TP53'])
+        #print(lB['TP53'])
+        
+        gene.driver.given.patients <-  exp(lA - 
+                                               (lB + log1p( (prior.driver/prior.passenger)*
+                                                                ((gene.mut.if.driver[genes]/gene.mut.if.passenger[genes])^n[genes])*
+                                                                ((gene.notmut.if.driver[genes]/gene.notmut.if.passenger[genes])^m[genes])  )))
+        #print(gene.driver.given.patients['TP53'])
+    }
     
-    gene.driver.given.patients <-  exp(A - logxpy(exp(A),exp(B)))
-    print(gene.driver.given.patients['TP53'])
     
         
-    # gene.driver.given.patients <- (prior.driver * gene.mut.if.driver[genes]^n[genes]*gene.notmut.if.driver[genes]^m[genes])/
-    #    ( (prior.driver* gene.mut.if.driver[genes]^n[genes]*gene.notmut.if.driver[genes]^m[genes])+
-    #         (prior.passenger* gene.mut.if.passenger[genes]^n[genes]*gene.notmut.if.passenger[genes]^m[genes]) ) 
+    # 
+    ind <- (gene.mut.if.driver[genes]^n[genes] == 0 ) | (gene.notmut.if.driver[genes]^m[genes] == 0) |  (gene.mut.if.passenger[genes]^n[genes] == 0) |  (gene.notmut.if.passenger[genes]^m[genes] == 0)
+    if (sum(ind)){
+        genes1 <- genes[!ind] 
+        genes2 <- genes[ind]  
     
+        gene.driver.given.patients <- (prior.driver * gene.mut.if.driver[genes1]^n[genes1]*gene.notmut.if.driver[genes1]^m[genes1])/
+            ( (prior.driver* gene.mut.if.driver[genes1]^n[genes1]*gene.notmut.if.driver[genes1]^m[genes1])+
+                  (prior.passenger* gene.mut.if.passenger[genes1]^n[genes1]*gene.notmut.if.passenger[genes1]^m[genes1]) )  
+        
+        
+        gene.driver.given.patients2 <- (prior.driver * mpfr(gene.mut.if.driver[genes2], precBits = 256)^n[genes2]* mpfr(gene.notmut.if.driver[genes2], precBits = 256)^m[genes2])/
+            ( (prior.driver* mpfr(gene.mut.if.driver[genes2], precBits = 256)^n[genes2]*mpfr(gene.notmut.if.driver[genes2], precBits = 256)^m[genes2])+
+                  (prior.passenger* mpfr(gene.mut.if.passenger[genes2], precBits = 256)^n[genes2]*mpfr(gene.notmut.if.passenger[genes2], precBits = 256)^m[genes2]) ) 
+        
+        gene.driver.given.patients2 <- as.numeric(gene.driver.given.patients2)
+        names(gene.driver.given.patients2) <- genes2
+        gene.driver.given.patients <- c(gene.driver.given.patients, gene.driver.given.patients2)
+        gene.driver.given.patients <- gene.driver.given.patients[genes]
+    
+    } else {
+        gene.driver.given.patients <- (prior.driver * gene.mut.if.driver[genes]^n[genes]*gene.notmut.if.driver[genes]^m[genes])/
+            ( (prior.driver* gene.mut.if.driver[genes]^n[genes]*gene.notmut.if.driver[genes]^m[genes])+
+                  (prior.passenger* gene.mut.if.passenger[genes]^n[genes]*gene.notmut.if.passenger[genes]^m[genes]) )  
+    }
+
+   
     
     #additional columns
     observed.mut.ns <- apply(mat.sample.gene.ns,1,function(x) sum(x >0))

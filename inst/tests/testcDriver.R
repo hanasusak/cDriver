@@ -28,14 +28,15 @@ rm(b)
 #bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
 bcgr.prob <- bcgr.combine(sample.genes.mutect)
 #bcgr.prob <- bcgr.combine(df)
-
 head(bcgr.prob)
 
 #df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, genes=length.genes$Hugo_Symbol, prior.sick = 0.00007) 
 df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, prior.sick = 0.00007) 
+#df1 <- bayes.risk(df, bcgr.prob, prior.sick = 0.00007) 
 head(df1)
 
 df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, prior.driver = 0.001) 
+#df2 <- bayes.driver(df, bcgr.prob, prior.driver = 0.001) 
 head(df2)
 
 df.final <- combine.ranking(list(df1, df2),  min.mut = 2 )
