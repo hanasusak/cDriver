@@ -7,6 +7,7 @@
 #' @import ggplot2
 #' @import data.table
 #' @import reshape2
+#' @import Rmpfr
 
 
 # Function to create matrix genes versus patients. 
@@ -514,10 +515,13 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
             ( (prior.driver* gene.mut.if.driver[genes1]^n[genes1]*gene.notmut.if.driver[genes1]^m[genes1])+
                   (prior.passenger* gene.mut.if.passenger[genes1]^n[genes1]*gene.notmut.if.passenger[genes1]^m[genes1]) )  
         
+    
+        # only to be able to run as Rscript
+        library(methods)
         
-        gene.driver.given.patients2 <- (prior.driver * mpfr(gene.mut.if.driver[genes2], precBits = 256)^n[genes2]* mpfr(gene.notmut.if.driver[genes2], precBits = 256)^m[genes2])/
-            ( (prior.driver* mpfr(gene.mut.if.driver[genes2], precBits = 256)^n[genes2]*mpfr(gene.notmut.if.driver[genes2], precBits = 256)^m[genes2])+
-                  (prior.passenger* mpfr(gene.mut.if.passenger[genes2], precBits = 256)^n[genes2]*mpfr(gene.notmut.if.passenger[genes2], precBits = 256)^m[genes2]) ) 
+        gene.driver.given.patients2 <- (prior.driver * mpfr(gene.mut.if.driver[genes2], precBits = 128)^n[genes2] * mpfr(gene.notmut.if.driver[genes2], precBits = 128)^m[genes2])/
+            ( (prior.driver* mpfr(gene.mut.if.driver[genes2], precBits = 128)^n[genes2]*mpfr(gene.notmut.if.driver[genes2], precBits = 128)^m[genes2])+
+                  (prior.passenger* mpfr(gene.mut.if.passenger[genes2], precBits = 128)^n[genes2]*mpfr(gene.notmut.if.passenger[genes2], precBits = 128)^m[genes2]) ) 
         
         gene.driver.given.patients2 <- as.numeric(gene.driver.given.patients2)
         names(gene.driver.given.patients2) <- genes2

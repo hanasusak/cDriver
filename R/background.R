@@ -159,7 +159,7 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     
     # mutations with CCF above  0.8 are considered clonal | taken as maximum likelihood estimate of lambda (poisson distribution)
     #n.healthy <- round( sum( table(nonsilent.df[nonsilent.df$ccf >= 0.85,'tumor_sample_barcode']) )/length(unique(sample.mutations$tumor_sample_barcode)))
-    n.healthy <- as.numeric(median( table(nonsilent.df[nonsilent.df$ccf >= 0.8,'tumor_sample_barcode']) ))
+    n.healthy <- floor(as.numeric(median( table(nonsilent.df[nonsilent.df$ccf >= 0.8,'tumor_sample_barcode']) )))
     
     #silent
     mat.sample.gene.s.ccf <- pat.vs.genes(silent.df, genes, valueCol='ccf', sample.gene.lim=1)
@@ -354,7 +354,7 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     nonsilent.df <- sample.mutations[sample.mutations$variant_classification != 'Silent' & !is.na(sample.mutations$variant_classification), ]
     # mutations with CCF above  0.8 are considered clonal | taken as maximum likelihood estimate of lambda (poisson distribution)
     #n.healthy <- round( sum( table(nonsilent.df[nonsilent.df$ccf >= 0.85,'tumor_sample_barcode']) )/length(unique(sample.mutations$tumor_sample_barcode)))
-    n.healthy <- as.numeric(median( table(nonsilent.df[nonsilent.df$ccf >= 0.8,'tumor_sample_barcode']) ))
+    n.healthy <- floor(as.numeric(median( table(nonsilent.df[nonsilent.df$ccf >= 0.8,'tumor_sample_barcode']) )))
     
     gene.mutated.if.healthy <-  sapply(bcgr.prob, function(x) sum(dbinom(1:n.healthy, n.healthy, x )))
     #warnings()

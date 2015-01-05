@@ -26,4 +26,5 @@ Imports:
 License: GPL (>= 2)
 LazyData: true
 Suggests:
-    testthat
+    testthat,
+    methods
