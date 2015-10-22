@@ -217,7 +217,7 @@ pat.vs.genes <- function (sample.mutations, genes = NULL, valueCol = NULL, Hugo_
 #'          There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence} and \code{bcgr.combine}.
 #' @param genes vector of genes which were sequenced. 
 #' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.
-#' @param prior.sick a numeric value representing incidence of tumor in population. Set by default to 0.00007 what has been reported as CLL incidence.
+#' @param prior.sick a numeric value representing incidence of tumor in population. Set by default to 0.00007 .
 #' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs/Indels.
@@ -239,9 +239,9 @@ pat.vs.genes <- function (sample.mutations, genes = NULL, valueCol = NULL, Hugo_
 #' # first calculate CCF
 #' sample.genes.mutect <- CCF(sample.genes.mutect)
 #' # then somatic background probability
-#' bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+#' bcgr.prob <- bcgr.combine(sample.genes.mutect)
 #' # bayes risk model
-#' risk.genes <- bayes.risk(sample.genes.mutect, length.genes$Hugo_Symbol, bcgr.prob, prior.sick = 0.00007) 
+#' risk.genes <- bayes.risk(sample.genes.mutect,  bcgr.prob, prior.sick = 0.00007) 
 #' head(risk.genes)  
 #' }
 #' @export
@@ -346,7 +346,8 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
                                   'background_mut_prob'=bcgr.prob[top],
                                   'ccf_mean'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
                                   'ccf_median'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
-                                  'ccf_sd'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])) 
+                                  'ccf_sd'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])),
+                                  'rank'=1:length(top) 
                                   )
     
     colnames(final.df.bayes1)[5] <- sample.ns.mut
@@ -378,9 +379,10 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
 #' @param genes a vector of genes which were sequenced. 
 #' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.
 #' @param prior.driver a numeric value representing prior probability that random gene is dirver. 
-#'          Default is set to 0.001, as it has been reported in CLL that around 20 genes from ~20000 has been involved in causing tumor.
-#' @param gene.mut.driver a numeric value representing likelihood that gene is mutated if it knowen to be driver. 
-#'          Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to 0.02.
+#'          Default is set to 127/20000, as it has been reported around 127 genes from ~20000 that have been involved in causing tumor.
+#' @param gene.mut.driver a numeric value or named vector representing likelihood that gene is mutated if it is knowen to be driver. 
+#'          Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to NULL and driver.genes are considered as drivers.
+#' @param driver.genes a character vector of genes which are considered as drivers for this cancer. If NULL then used set is \code{driver.genes.concensus}.
 #' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs/Indels.
@@ -402,13 +404,13 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
 #' # first calculate CCF
 #' sample.genes.mutect <- CCF(sample.genes.mutect)
 #' # then somatic background probability
-#' bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+#' bcgr.prob <- bcgr.combine(sample.genes.mutect)
 #' # bayes risk model
-#' driver.genes <- bayes.driver(sample.genes.mutect, length.genes$Hugo_Symbol, driver = 0.001, gene.mut.driver=1/50) 
+#' driver.genes <- bayes.driver(sample.genes.mutect, driver = 0.001, gene.mut.driver=1/50) 
 #' head(driver.genes)  
 #' }
 #' @export
-bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver = 20/20000, gene.mut.driver=1/50, 
+bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver = 127/20000, gene.mut.driver=NULL, driver.genes=NULL,
     Variant_Classification=NULL, Hugo_Symbol=NULL, Tumor_Sample_Barcode=NULL, CCF=NULL, Damage_score=NULL , mode='MAX', epsilon=0.05 ) {
     if (is.atomic(sample.mutations)) {
         sample.mutations <- data.frame(x = sample.mutations)
@@ -423,7 +425,7 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     }
     
     if (!is.null(Hugo_Symbol)){
-        sample.mutations <- assign.columns(sample.mutations, Hugo_Symbol, "Hugo_Symbol")
+        sample.mut9ations <- assign.columns(sample.mutations, Hugo_Symbol, "Hugo_Symbol")
     }
     
     if (!is.null(Tumor_Sample_Barcode)){
@@ -443,6 +445,8 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     original.col.names <- colnames(sample.mutations)
     num.col <- ncol(sample.mutations)
     colnames(sample.mutations) <-  tolower(colnames(sample.mutations))
+
+    
     
     if (is.null(genes)){
         genes <- as.character(unique(sample.mutations$hugo_symbol))
@@ -457,16 +461,35 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     
     prior.passenger <- 1 - prior.driver
     
-    
     # take only exonic
     sample.mutations <-  exonic.only(sample.mutations) 
     
-    
     #condtitionals
+    if(is.null(gene.mut.driver)){
+        if(is.null(driver.genes)){
+           driver.genes <- driver.genes.concensus
+        }
+        num.mut <- nrow(sample.mutations[sample.mutations$hugo_symbol %in% driver.genes,])
+        num.pat <- length(unique(as.character(sample.mutations$tumor_sample_barcode)))
+        num.canc.genes <- length(unique(driver.genes))
+        gene.mut.if.driver <- c()
+        gene.mut.if.driver[genes]  <- num.mut/(num.pat*num.canc.genes)
+    } else {
+        if(is.null(names(gene.mut.driver))){
+            gene.mut.if.driver <- c()
+            gene.mut.if.driver[genes] <- gene.mut.driver
+        } else {
+            gene.mut.if.driver[genes] <- gene.mut.driver[genes]        
+        }
+        
+    }
+    
+    # make sure that probability that gene is mutated if a driver is bigger or equal then if passenger 
+    #gene.mut.if.driver <- mapply(max, gene.mut.if.driver[genes], bcgr.prob[genes])
+
     gene.mut.if.passenger <- bcgr.prob
     gene.notmut.if.passenger <- 1 - gene.mut.if.passenger
-    gene.mut.if.driver <- c()
-    gene.mut.if.driver[genes] <- gene.mut.driver
+
     gene.notmut.if.driver <- 1 - gene.mut.if.driver
     
     # matrices genes vs. samples
@@ -502,8 +525,6 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
                                                                 ((gene.notmut.if.driver[genes]/gene.notmut.if.passenger[genes])^m[genes])  )))
         #print(gene.driver.given.patients['TP53'])
     }
-    
-    
         
     # 
     ind <- (gene.mut.if.driver[genes]^n[genes] == 0 ) | (gene.notmut.if.driver[genes]^m[genes] == 0) |  (gene.mut.if.passenger[genes]^n[genes] == 0) |  (gene.notmut.if.passenger[genes]^m[genes] == 0)
@@ -544,12 +565,17 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     observed.mut.s.ccf <- rowSums(mat.sample.gene.s.ccf)
     n.indels <- table(sample.mutations[sample.mutations$variant_type %in% c('DEL', 'INS'),'hugo_symbol'], exclude=F)
     
-    top <- as.character(names(sort(gene.driver.given.patients, decreasing=T)))
+    df.temp <- as.data.frame(cbind(gene.driver.given.patients[genes],n[genes]))
+    df.temp <- df.temp[ order(round(df.temp$V1, digits=4), df.temp$V2, decreasing=T), ]
+    
+    
+    #top <- as.character(names(sort(gene.driver.given.patients, decreasing=T)))
+    top <- as.character(rownames(df.temp))
     sample.ns.mut <- paste('sample_ns_mut(',length(levels(sample.mutations$tumor_sample_barcode)),')',sep="")
     sample.s.mut <- paste('sample_s_mut(',length(levels(sample.mutations$tumor_sample_barcode)),')',sep="")
     
     final.df.bayes2 <- data.frame('Hugo_Symbol' = top,
-                                  'postProb' = gene.driver.given.patients[top],
+                                  'postProb' = round(gene.driver.given.patients[top], digits=4),
                                   'CCF_x_damage' = n[top],
                                   'fold' = gene.driver.given.patients[top]/prior.driver,
                                   'sample_ns_mut' = observed.mut.ns[top],
@@ -561,14 +587,21 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
                                   'background_mut_prob'=bcgr.prob[top],
                                   'ccf_mean'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
                                   'ccf_median'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
-                                  'ccf_sd'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])) 
+                                  'ccf_sd'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])),
+                                  'gene_mut_if_driver'=gene.mut.if.driver[top],
+                                  'rank'=1:length(top)
     )
 
+    
     colnames(final.df.bayes2)[5] <- sample.ns.mut
     colnames(final.df.bayes2)[8] <- sample.s.mut
     
     #return original names
     colnames(sample.mutations)[1:num.col] <- original.col.names
+    
+    # correct to NA postProb for genes without any nonsilent mutation
+    #final.df.bayes2[final.df.bayes2$total_ns_mut == 0, 'postProb'] <- NA
+    #final.df.bayes2 <- final.df.bayes2[order(final.df.bayes2$postProb, decreasing=T, na.last=T), ]
     
     return(final.df.bayes2)
 }
@@ -603,6 +636,8 @@ combine.ranking <- function(rankings=list(bayes.risk.rank, bayes.driver.rank), g
     rank.df <- data.frame('Hugo_Symbol' = genes,
                           'bayes_risk' = (bayes.risk.rank[genes,]$postProb),
                           'bayes_driver' = (bayes.driver.rank[genes,]$postProb),
+                          'risk_rank' = (bayes.risk.rank[genes,]$rank),
+                          'driver_rank' = (bayes.driver.rank[genes,]$rank),
                           'sample_ns_mut' =  bayes.driver.rank[genes,5],
                           'total_ns_mut'= bayes.driver.rank[genes,]$total_ns_mut,
                           'ccf_sum' =  bayes.driver.rank[genes,]$nonsilent_CCF_sum ,
@@ -611,7 +646,7 @@ combine.ranking <- function(rankings=list(bayes.risk.rank, bayes.driver.rank), g
                           'mut_rate' = bayes.driver.rank[genes,]$background_mut_prob
     )
     
-    colnames(rank.df)[4] <- colnames(bayes.driver.rank)[5]
+    colnames(rank.df)[6] <- colnames(bayes.driver.rank)[5]
     
     if (length(rankings) > 2) {
         n <- length(rankings) 
@@ -625,8 +660,8 @@ combine.ranking <- function(rankings=list(bayes.risk.rank, bayes.driver.rank), g
     rank.df <- rank.df[rank.df$sample_ns_mut >= min.mut & !is.na(rank.df$sample_ns_mut),  ]
     )
     
-    rank.df$rank_bayes_risk <- rank( (- rank.df$bayes_risk), ties.method="min")
-    rank.df$rank_bayes_driver <- rank( (- rank.df$bayes_driver), ties.method="min")
+    rank.df$rank_bayes_risk <- rank( ( rank.df$risk_rank), ties.method="min")
+    rank.df$rank_bayes_driver <- rank( ( rank.df$driver_rank), ties.method="min")
     
     if (length(rankings) > 2) {
         n <- length(rankings) 

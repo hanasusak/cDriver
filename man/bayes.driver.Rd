@@ -4,7 +4,7 @@
 \title{Bayesina risk inference model.}
 \usage{
 bayes.driver(sample.mutations, bcgr.prob, genes = NULL,
-  prior.driver = 20/20000, gene.mut.driver = 1/50,
+  prior.driver = 127/20000, gene.mut.driver = NULL, driver.genes = NULL,
   Variant_Classification = NULL, Hugo_Symbol = NULL,
   Tumor_Sample_Barcode = NULL, CCF = NULL, Damage_score = NULL,
   mode = "MAX", epsilon = 0.05)
@@ -27,10 +27,12 @@ There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence}
 They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.}
 
 \item{prior.driver}{a numeric value representing prior probability that random gene is dirver.
-Default is set to 0.001, as it has been reported in CLL that around 20 genes from ~20000 has been involved in causing tumor.}
+Default is set to 127/20000, as it has been reported around 127 genes from ~20000 that have been involved in causing tumor.}
 
-\item{gene.mut.driver}{a numeric value representing likelihood that gene is mutated if it knowen to be driver.
-Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to 0.02.}
+\item{gene.mut.driver}{a numeric value or named vector representing likelihood that gene is mutated if it is knowen to be driver.
+Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to NULL and driver.genes are considered as drivers.}
+
+\item{driver.genes}{a character vector of genes which are considered as drivers for this cancer. If NULL then used set is \code{driver.genes.concensus}.}
 
 \item{Variant_Classification}{(optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not).
 Default is NULL value (in this case \code{sample.mutations} should already have this column)}
@@ -63,9 +65,9 @@ Additional columns with usefull info are contained in data frame.
 # first calculate CCF
 sample.genes.mutect <- CCF(sample.genes.mutect)
 # then somatic background probability
-bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+bcgr.prob <- bcgr.combine(sample.genes.mutect)
 # bayes risk model
-driver.genes <- bayes.driver(sample.genes.mutect, length.genes$Hugo_Symbol, driver = 0.001, gene.mut.driver=1/50)
+driver.genes <- bayes.driver(sample.genes.mutect, driver = 0.001, gene.mut.driver=1/50)
 head(driver.genes)
 }
 }

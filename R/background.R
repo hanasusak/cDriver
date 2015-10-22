@@ -159,11 +159,11 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     
     # mutations with CCF above  0.8 are considered clonal | taken as maximum likelihood estimate of lambda (poisson distribution)
     #n.healthy <- round( sum( table(nonsilent.df[nonsilent.df$ccf >= 0.85,'tumor_sample_barcode']) )/length(unique(sample.mutations$tumor_sample_barcode)))
-    n.healthy <- floor(as.numeric(median( table(nonsilent.df[nonsilent.df$ccf >= 0.8,'tumor_sample_barcode']) )))
-    
+    n.healthy <- floor(as.numeric(median( table(nonsilent.df[nonsilent.df$ccf >= 0.85,'tumor_sample_barcode']) )))
+    n.healthy <- max(1, n.healthy)
     #silent
     mat.sample.gene.s.ccf <- pat.vs.genes(silent.df, genes, valueCol='ccf', sample.gene.lim=1)
-    observed.mut.s.ccf <- rowSums(mat.sample.gene.s.ccf)    
+    observed.mut.s.ccf <- rowSums(mat.sample.gene.s.ccf)      
     
     # correction values
     prim.corr.s.zero <- lawrence.df[genes,]$N_silent/lawrence.df[genes,]$N_nonsilent
@@ -178,7 +178,6 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     }
     #ind <- (!names(observed.mut.s.ccf) %in% (names(prim.corr.s.zero)))
     #prim.corr.s.zero[names(observed.mut.s.ccf)[ind]] <- avg.corr
-    
     
     # calculate corrected (no zeros) somatic silent CCF sums
     observed.mut.s.ccf.cor <- c()

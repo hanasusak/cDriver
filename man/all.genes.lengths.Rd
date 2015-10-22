@@ -3,7 +3,7 @@
 \name{all.genes.lengths}
 \alias{all.genes.lengths}
 \title{Coding genes length by Ensamble, length is calculated as sum of all coding exons (merged before so each position only once ocunted).}
-\format{data grame}
+\format{data frame}
 \source{
 http://www.genenames.org/ (Most recent HUGO approved names ) and ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens (info for genes, exons, lenghts)
 }

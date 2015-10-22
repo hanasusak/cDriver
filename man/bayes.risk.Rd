@@ -25,7 +25,7 @@ There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence}
 \item{genes}{vector of genes which were sequenced.
 They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.}
 
-\item{prior.sick}{a numeric value representing incidence of tumor in population. Set by default to 0.00007 what has been reported as CLL incidence.}
+\item{prior.sick}{a numeric value representing incidence of tumor in population. Set by default to 0.00007 .}
 
 \item{Variant_Classification}{(optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not).
 Default is NULL value (in this case \code{sample.mutations} should already have this column)}
@@ -58,9 +58,9 @@ Additional columns with usefull info are contained in data frame.
 # first calculate CCF
 sample.genes.mutect <- CCF(sample.genes.mutect)
 # then somatic background probability
-bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+bcgr.prob <- bcgr.combine(sample.genes.mutect)
 # bayes risk model
-risk.genes <- bayes.risk(sample.genes.mutect, length.genes$Hugo_Symbol, bcgr.prob, prior.sick = 0.00007)
+risk.genes <- bayes.risk(sample.genes.mutect,  bcgr.prob, prior.sick = 0.00007)
 head(risk.genes)
 }
 }

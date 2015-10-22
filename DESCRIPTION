@@ -1,6 +1,6 @@
 Package: cDriver
 Title: Find best driver candidate genes
-Version: 0.2
+Version: 0.3
 Authors@R: c(
     person("Hana", "Susak",
     email = "hanasusak@gmail.com", role = c("aut", "cre")),
@@ -12,7 +12,7 @@ Description: Package has several functions to help you calculate Cancer Cell
     Bayes inference models. Functions works with MAF like files, but some
     differences exist (additional columns). User need to provide silent and non
     silent mutations detected in exotic and splicing regions. Also some
-    functions need list of genes which were covered by probes and length
+    functions recomand list of genes which were covered by probes and length
     covered by sequencing of these genes. In case user can not provide optional
     columns/info, function will replace variables with most likely/plausible
     values.

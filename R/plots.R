@@ -292,9 +292,9 @@ plotMutChange <- function(sample.mutations, silent=TRUE, fill=TRUE,  Tumor_Sampl
 #' # get background
 #' bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
 #' # get ranking
-#' df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, genes=length.genes$Hugo_Symbol, prior.sick = 0.00007) 
-#' df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, length.genes$Hugo_Symbol, prior.driver = 0.001) 
-#' df.final <- combine.ranking(list(df1, df2), length.genes$Hugo_Symbol, min.mut = 2 )
+#' df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, prior.sick = 0.00007) 
+#' df2 <- bayes.driver(sample.genes.mutect, bcgr.prob,  prior.driver = 0.001) 
+#' df.final <- combine.ranking(list(df1, df2),  min.mut = 2 )
 #' # plot boxplot of CCF for top genes
 #' boxplotCCF(sample.mutations=sample.genes.mutect, result.df=df.final)
 #' }
@@ -469,11 +469,11 @@ boxplotCCF.mutations <- function(sample.mutations, result.df, topGenes=20, silen
 #' #get CCF column
 #' sample.genes.mutect <- CCF(sample.genes.mutect)
 #' # get background
-#' bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+#' bcgr.prob <- bcgr.combine(sample.genes.mutect)
 #' # get ranking
-#' df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, genes=length.genes$Hugo_Symbol, prior.sick = 0.00007) 
-#' df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, length.genes$Hugo_Symbol, prior.driver = 0.001) 
-#' df.final <- combine.ranking(list(df1, df2), length.genes$Hugo_Symbol, min.mut = 2 )
+#' df1 <- bayes.risk(sample.genes.mutect, bcgr.prob,  prior.sick = 0.00007) 
+#' df2 <- bayes.driver(sample.genes.mutect, bcgr.prob,  prior.driver = 0.001) 
+#' df.final <- combine.ranking(list(df1, df2),  min.mut = 2 )
 #' # plot boxplot of CCF for top genes
 #' boxplotCCF(sample.mutations=sample.genes.mutect, result.df=df.final)
 #' }
@@ -715,23 +715,25 @@ boxplotCCF.patients <- function(sample.mutations, result.df, topGenes=20, silent
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #' @param color a numeric or character value indicating column to color the samples.
 #' @param groupMax a numeric value which will be taken as maximum value when grouping color column for samples and genes pairs.
+#' @param order a character value which can be or \code{'frequency'} or \code{'CCF_sum'}.
 #' @return ggplot2 object 
 #' @examples 
 #' \donttest{
 #' #get CCF column
 #' sample.genes.mutect <- CCF(sample.genes.mutect)
 #' # get background
-#' bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+#' bcgr.prob <- bcgr.combine(sample.genes.mutect)
 #' # get ranking
-#' df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, genes=length.genes$Hugo_Symbol, prior.sick = 0.00007) 
-#' df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, length.genes$Hugo_Symbol, prior.driver = 0.001) 
-#' df.final <- combine.ranking(list(df1, df2), length.genes$Hugo_Symbol, min.mut = 2 )
+#' df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, prior.sick = 0.00007) 
+#' df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, prior.driver = 0.001) 
+#' df.final <- combine.ranking(list(df1, df2), min.mut = 2 )
 #' # plot boxplot of CCF for top genes
 #' plotStaircase(sample.mutations=sample.genes.mutect, result.df=df.final)
 #' }
 #' @export
 plotStaircase <- function(sample.mutations, result.df, topGenes=40, silent=FALSE, indels=TRUE, allSamples= FALSE,
-                       Tumor_Sample_Barcode=NULL, Hugo_Symbol=NULL, Variant_Classification=NULL,  Variant_Type = NULL, color='CCF' , groupMax=1) {
+                       Tumor_Sample_Barcode=NULL, Hugo_Symbol=NULL, Variant_Classification=NULL,  Variant_Type = NULL, 
+                       color='CCF' , groupMax=1, order='frequency') {
 
     if (is.atomic(sample.mutations)) {
         sample.mutations <- data.frame(x = sample.mutations)
@@ -786,9 +788,14 @@ plotStaircase <- function(sample.mutations, result.df, topGenes=40, silent=FALSE
         sample.mutations <- sample.mutations[! sample.mutations$variant_type %in% c('DEL', 'INS' ),]
     }
     
- 
-    sample.mutations$hugo_symbol <- factor(sample.mutations$hugo_symbol, levels=names( sort(table(sample.mutations$hugo_symbol), decreasing=F )) )
-    
+    if (order == 'CCF_sum'){
+        ccf.sums <- aggregate(ccf ~ hugo_symbol, data=sample.mutations, sum)
+        ccf.sums <- ccf.sums[order(ccf.sums$ccf, decreasing=F),]
+        sample.mutations$hugo_symbol <- factor(sample.mutations$hugo_symbol, levels=ccf.sums$hugo_symbol )
+        
+    } else {
+        sample.mutations$hugo_symbol <- factor(sample.mutations$hugo_symbol, levels=names( sort(table(sample.mutations$hugo_symbol), decreasing=F )) )
+    }
     
     if((is.numeric(color) | is.integer(color)) & color <= ncol(sample.mutations) ){
         col.var <- colnames(sample.mutations)[color]  

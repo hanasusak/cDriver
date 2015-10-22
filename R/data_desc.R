@@ -57,8 +57,19 @@ NULL
 #'  }
 #' @docType data
 #' @usage all.genes.lengths
-#' @format data grame
+#' @format data frame
 #' @source http://www.genenames.org/ (Most recent HUGO approved names ) and ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens (info for genes, exons, lenghts)
+# @author Hana Susak, 1/4/2014
+#' @keywords data
+NULL
+
+#' @name driver.genes.concensus
+#' @title Vector of genes which are considered as common cancer drivers. 
+#' @description This charachter vector containes 544 cammon cancer genes. 
+#' @docType data
+#' @usage all.genes.lengths
+#' @format charachter vector
+# @source http://www.genenames.org/ (Most recent HUGO approved names ) and ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens (info for genes, exons, lenghts)
 # @author Hana Susak, 1/4/2014
 #' @keywords data
 NULL

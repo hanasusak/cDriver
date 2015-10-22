@@ -6,7 +6,7 @@
 plotStaircase(sample.mutations, result.df, topGenes = 40, silent = FALSE,
   indels = TRUE, allSamples = FALSE, Tumor_Sample_Barcode = NULL,
   Hugo_Symbol = NULL, Variant_Classification = NULL, Variant_Type = NULL,
-  color = "CCF", groupMax = 1)
+  color = "CCF", groupMax = 1, order = "frequency")
 }
 \arguments{
 \item{sample.mutations}{data frame in MAF like format.
@@ -43,6 +43,8 @@ Default is NULL value (in this case \code{sample.mutations} should already have 
 \item{color}{a numeric or character value indicating column to color the samples.}
 
 \item{groupMax}{a numeric value which will be taken as maximum value when grouping color column for samples and genes pairs.}
+
+\item{order}{a character value which can be or \code{'frequency'} or \code{'CCF_sum'}.}
 }
 \value{
 ggplot2 object
@@ -55,11 +57,11 @@ ggplot2 object
 #get CCF column
 sample.genes.mutect <- CCF(sample.genes.mutect)
 # get background
-bcgr.prob <- bcgr.combine(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
+bcgr.prob <- bcgr.combine(sample.genes.mutect)
 # get ranking
-df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, genes=length.genes$Hugo_Symbol, prior.sick = 0.00007)
-df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, length.genes$Hugo_Symbol, prior.driver = 0.001)
-df.final <- combine.ranking(list(df1, df2), length.genes$Hugo_Symbol, min.mut = 2 )
+df1 <- bayes.risk(sample.genes.mutect, bcgr.prob, prior.sick = 0.00007)
+df2 <- bayes.driver(sample.genes.mutect, bcgr.prob, prior.driver = 0.001)
+df.final <- combine.ranking(list(df1, df2), min.mut = 2 )
 # plot boxplot of CCF for top genes
 plotStaircase(sample.mutations=sample.genes.mutect, result.df=df.final)
 }

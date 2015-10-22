@@ -44,7 +44,9 @@ a data frame with one additional column, giving CCF vlaues for each SNV in intia
 }
 \examples{
 # Simulate some VAF, ploidy and CCF_CNV values
-df <- data.frame(VAF=runif(100, min=0.05, max=0.75), ploidy=sample(c(1,2,3,4), 100, replace=TRUE, prob=c(0.4,0.9,0.5,0.1)), CCF_CNV=runif(100, min=0.1,max=1))
+df <- data.frame(VAF=runif(100, min=0.05, max=0.75),
+                 ploidy=sample(c(1:4), 100, replace=TRUE, prob=c(0.4,0.9,0.5,0.1)),
+                 CCF_CNV=runif(100, min=0.1,max=1))
 df[df$ploidy == 2, 'CCF_CNV'] <- 1
 # call CCF function
 df2 <- CCF(df)
