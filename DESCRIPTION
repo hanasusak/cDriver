@@ -1,6 +1,6 @@
 Package: cDriver
 Title: Find best driver candidate genes
-Version: 0.3
+Version: 0.4
 Authors@R: c(
     person("Hana", "Susak",
     email = "hanasusak@gmail.com", role = c("aut", "cre")),
