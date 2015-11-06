@@ -5,6 +5,7 @@ Authors@R: c(
     person("Hana", "Susak",
     email = "hanasusak@gmail.com", role = c("aut", "cre")),
     person("Luis", "Zapata", role = "aut"),
+    person(“Stephan”, “Ossowski”, role = "aut"),
     person("R Core team", role = "ctb",
     comment = "Some namespace and vignette code extracted from base R"))
 Description: Package has several functions to help you calculate Cancer Cell
