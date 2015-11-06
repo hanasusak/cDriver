@@ -7,7 +7,7 @@
 
 
 
-# Function to assigne column name, given position of column provided by user
+# Function to assign columns in case no header is provided or naming is not standard
 # (better practice would be to already have named columns as specified)
 # @param sample.mutations - data frame to which column need to be named
 # @param column - integer/numeric value for which we are assigning name
