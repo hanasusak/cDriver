@@ -4,8 +4,8 @@
 \alias{bayes.driver}
 \title{Bayesina risk inference model.}
 \usage{
-bayes.driver(sample.mutations, bcgr.prob, genes = NULL,
-  prior.driver = 127/20000, gene.mut.driver = NULL, driver.genes = NULL,
+bayes.driver(sample.mutations, bcgr.prob, genes = NULL, prior.driver = NULL,
+  gene.mut.driver = NULL, driver.genes = NULL,
   Variant_Classification = NULL, Hugo_Symbol = NULL,
   Tumor_Sample_Barcode = NULL, CCF = NULL, Damage_score = NULL,
   mode = "MAX", epsilon = 0.05)
@@ -28,7 +28,7 @@ There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence}
 They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.}
 
 \item{prior.driver}{a numeric value representing prior probability that random gene is dirver.
-Default is set to 127/20000, as it has been reported around 127 genes from ~20000 that have been involved in causing tumor.}
+Default is set to \code{length(driver.genes.concensus)}/20000, as it has been reported around 127 high confidence genes from ~20000 that have been considered as drivers.}
 
 \item{gene.mut.driver}{a numeric value or named vector representing likelihood that gene is mutated if it is knowen to be driver.
 Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to NULL and driver.genes are considered as drivers.}
