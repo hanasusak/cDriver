@@ -2,12 +2,10 @@ Package: cDriver
 Title: Find best driver candidate genes
 Version: 0.4
 Authors@R: c(
-    person("Hana", "Susak",
-    email = "hanasusak@gmail.com", role = c("aut", "cre")),
+    person("Hana", "Susak", email = "hanasusak@gmail.com", role = c("aut", "cre")),
     person("Luis", "Zapata", role = "aut"),
-    person(“Stephan”, “Ossowski”, role = "aut"),
-    person("R Core team", role = "ctb",
-    comment = "Some namespace and vignette code extracted from base R"))
+    person("Stephan", "Ossowski", role = "aut"),
+    person("R Core team", role = "ctb", comment = "Some namespace and vignette code extracted from base R") )
 Description: Package has several functions to help you calculate Cancer Cell
     Fraction and rank genes based on posterior probability calculated with
     Bayes inference models. Functions works with MAF like files, but some
