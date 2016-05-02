@@ -379,7 +379,7 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
 #' @param genes a vector of genes which were sequenced. 
 #' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.
 #' @param prior.driver a numeric value representing prior probability that random gene is dirver. 
-#'          Default is set to \code{length(driver.genes.concensus)}/20000, as it has been reported around 127 high confidence genes from ~20000 that have been considered as drivers.
+#'          Default is set to \code{length(driver.genes)}/20000, as it assumed there is ~20000 protein goding genes.
 #' @param gene.mut.driver a numeric value or named vector representing likelihood that gene is mutated if it is knowen to be driver. 
 #'          Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to NULL and driver.genes are considered as drivers.
 #' @param driver.genes a character vector of genes which are considered as drivers for this cancer. If NULL then used set is \code{driver.genes.concensus}.
@@ -439,9 +439,19 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     if (!is.null(Damage_score)){
         sample.mutations <- assign.columns(sample.mutations, Damage_score, "Damage_score")
     }
+      
+    
+    if(is.null(driver.genes) & is.null(gene.mut.driver)){
+        driver.genes <- driver.genes.concensus
+    } 
     
     if (is.null(prior.driver)){
-        prior.driver <- length(driver.genes.concensus)/20000
+        if(is.null(gene.mut.driver)){
+            prior.driver <- length(driver.genes)/20000     
+        } else {
+            prior.driver <- length(gene.mut.driver)/20000   
+        }
+        
     }
     
     ##########
@@ -470,9 +480,6 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     
     #condtitionals
     if(is.null(gene.mut.driver)){
-        if(is.null(driver.genes)){
-           driver.genes <- driver.genes.concensus
-        }
         num.mut <- nrow(sample.mutations[sample.mutations$hugo_symbol %in% driver.genes,])
         num.pat <- length(unique(as.character(sample.mutations$tumor_sample_barcode)))
         num.canc.genes <- length(unique(driver.genes))
@@ -483,7 +490,9 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
             gene.mut.if.driver <- c()
             gene.mut.if.driver[genes] <- gene.mut.driver
         } else {
-            gene.mut.if.driver[genes] <- gene.mut.driver[genes]        
+            gene.mut.if.driver[genes] <- gene.mut.driver[genes]   
+            gene.mut.if.driver[is.na(gene.mut.if.driver)] <- 0
+            names(gene.mut.if.driver) <- genes
         }
         
     }
