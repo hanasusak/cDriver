@@ -15,8 +15,8 @@ install.packages("hanasusak/cDriver")
 
 library(cDriver)
 
-C&# And now is read to use!
+C\# And now is read to use!
 
 # Installation from Command line (terminal)
 
-$ R CMD
+$ R CMD install 
