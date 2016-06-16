@@ -16,14 +16,15 @@ install.packages("hanasusak/cDriver")
 
 library(cDriver)
 
-\# And now is read to use!
+# And now is read to use!
 ```
 
 # Installation from Command line (terminal)
+```Shell
+curl -L https://api.github.com/repos/hanasusak/cDriver/tarball > cDriver.tar.gz
 
-$ curl -L https://api.github.com/repos/hanasusak/cDriver/tarball > cDriver.tar.gz
-
-$ R CMD INSTALL cDriver.tar.gz
+R CMD INSTALL cDriver.tar.gz
+```
 
 \# cDriver package should be installed now.
  
