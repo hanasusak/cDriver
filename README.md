@@ -19,6 +19,6 @@ library(cDriver)
 
 # Installation from Command line (terminal)
 
-$ wget http://cran.r-project.org/src/contrib/fortunes_1.4-1.tar.gz
+$ curl -L https://api.github.com/repos/hanasusak/cDriver/tarball > cDriver.tar.gz
 
 $ # install the package as superuser
