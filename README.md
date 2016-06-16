@@ -23,4 +23,4 @@ $ curl -L https://api.github.com/repos/hanasusak/cDriver/tarball > cDriver.tar.g
 
 $ R CMD INSTALL cDriver.tar.gz
 
-or you can download package from github directly (by clicking download )
+\# cDriver package should be installed now.
