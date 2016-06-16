@@ -31,7 +31,7 @@ R CMD INSTALL cDriver.tar.gz
 or
 
 Click at this [link](https://api.github.com/repos/hanasusak/cDriver/tarball) and download cDriver package.
-Then you can install it from Shell as mentioned before:
+Then you rename it as cDriver.tar.gz and you can install it from Shell as mentioned before:
 ```Shell
 R CMD INSTALL cDriver.tar.gz
 
