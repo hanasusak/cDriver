@@ -12,7 +12,7 @@ install.packages("devtools")
 
 library(devtools)
 
-install.packages("hanasusak/cDriver")
+install_github("hanasusak/cDriver")
 
 library(cDriver)
 
