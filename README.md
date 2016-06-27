@@ -1,5 +1,5 @@
 # cDriver
-cDriver R package for finding candidate driver genes in cancers
+cDriver R package for finding candidate driver genes in cancers. To be able to use cDriver, user must have installed R programing language.
 
 Current version is a Beta version. We will regularly improve this package based on a users comments.
 
