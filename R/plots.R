@@ -393,11 +393,16 @@ boxplotCCF.mutations <- function(sample.mutations, result.df, topGenes=20, silen
         } else {
             stop('shape need to be or numeric indicator of column in sample.mutations data frame or charater with column name.')
         }
-        n.sh <- length(sample.mutations[,sh.var])
+        n.sh <- length(unique(sample.mutations[,sh.var]))
+        if (n.sh <= 11 ) {
+            sh.seq <- 15:(n.sh+14)
+        } else {
+            sh.seq <- c(15:25,1:(n.sh-11))
+        }
         p <- ggplot(sample.mutations, aes_string('hugo_symbol','ccf', label='tumor_sample_barcode')) + geom_boxplot(outlier.size=0) + theme_bw()  +
             xlab('Top  Genes') + theme(axis.text.x = element_text(angle = -30, hjust = 0, vjust=1)) + ylab('Cancer Cell Fraction') + 
             geom_jitter(aes_string(shape=sh.var),size=2.5, alpha=0.65, position = position_jitter(width = .3, height=0)) +
-            scale_shape_manual(values=1:n.sh) 
+            scale_shape_manual(values=sample(sh.seq, replace=F) ) 
             
         
     }
@@ -409,7 +414,12 @@ boxplotCCF.mutations <- function(sample.mutations, result.df, topGenes=20, silen
        } else {
            stop('shape need to be or numeric indicator of column in sample.mutations data frame or charater with column name.')
        }
-       n.sh <- length(sample.mutations[,sh.var])
+       n.sh <- length(unique(sample.mutations[,sh.var]))
+       if (n.sh <= 11 ) {
+           sh.seq <- 15:(n.sh+14)
+       } else {
+           sh.seq <- c(15:25,1:(n.sh-11))
+       }
        if((is.numeric(color) | is.integer(color)) & color <= ncol(sample.mutations) ){
            col.var <- colnames(sample.mutations)[color]  
        } else if (is.character(color) & color %in% colnames(sample.mutations)){
@@ -420,7 +430,7 @@ boxplotCCF.mutations <- function(sample.mutations, result.df, topGenes=20, silen
        p <- ggplot(sample.mutations, aes_string('hugo_symbol','ccf', label='tumor_sample_barcode')) + geom_boxplot(outlier.size=0) + theme_bw()  +
            xlab('Top  Genes') + theme(axis.text.x = element_text(angle = -30, hjust = 0, vjust=1)) + ylab('Cancer Cell Fraction') + 
            geom_jitter(aes_string(color=(col.var), shape=(sh.var)),size=2.5, alpha=0.65, position = position_jitter(width = .15, height=0)) +#, drop=FALSE
-           scale_shape_manual(values=1:n.sh) 
+           scale_shape_manual(values=sample(sh.seq, replace=F)) 
    }
    
    
