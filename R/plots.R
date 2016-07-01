@@ -337,7 +337,7 @@ boxplotCCF.mutations <- function(sample.mutations, result.df, topGenes=20, silen
     if (!is.null(color) & is.character(color)){
         color <- tolower(color)
     }
-    if (!is.null(shape) & is.character(color)){
+    if (!is.null(shape) & is.character(shape)){
         shape <- tolower(shape)
     }
     # take only exonic
