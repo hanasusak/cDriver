@@ -527,7 +527,7 @@ boxplotCCF.patients <- function(sample.mutations, result.df, topGenes=20, silent
         }       
     } else if (!is.null(color)){
         stop('color variable must be character type')
-    } 
+    }  
     
     if ( (!is.null(shape)) & is.character(shape)   ) { 
         if (tolower(shape) %in% colnames(sample.mutations)){
