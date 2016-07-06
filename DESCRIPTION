@@ -22,7 +22,7 @@ Imports:
     ggplot2,
     reshape2,
     Rmpfr
-License: GPL (>= 2)
+License: 
 LazyData: true
 Suggests:
     testthat,
