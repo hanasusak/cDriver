@@ -122,7 +122,7 @@ plotSamplesMut <- function(sample.mutations, indels=TRUE, silent=TRUE, fill=FALS
             scale_y_continuous( name='Proportions', expand = c(0, 0))  
     } else {
         p1 <- ggplot(data=sample.gene.all, aes_string('tumor_sample_barcode', fill='typeMut')) + geom_bar(position='stack') + 
-            scale_y_discrete(name='Count', breaks=round(seq(0, max.y, length.out=10)), expand = c(0, 0))  
+            scale_y_continuous(name='Count', breaks=round(seq(0, max.y, length.out=10)), expand = c(0, 0))  
     }
     p1 <- p1 +  scale_x_discrete(expand = c(0, 0), drop=FALSE) +
         theme_bw(base_size = 10) + 
