@@ -342,7 +342,7 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
                                   'nonsilent_CCF_sum' = observed.mut.ns.ccf[top],
                                   'sample_s_mut'= observed.mut.s[top],
                                   'silent_CCF_sum' = observed.mut.s.ccf[top],                                  
-                                  'indels'= n.indels[top],
+                                  'indels'= as.numeric(n.indels[top]),
                                   'background_mut_prob'=bcgr.prob[top],
                                   'ccf_mean'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
                                   'ccf_median'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
@@ -510,7 +510,7 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     mat.sample.gene.s <- pat.vs.genes(sample.mutations[sample.mutations$variant_classification == 'Silent',], genes)
     if ('damage_score' %in% colnames(sample.mutations) ){
         mat.sample.gene.ns.Damage <- pat.vs.genes(sample.mutations[sample.mutations$variant_classification != 'Silent',], genes, valueCol='damage_score', sample.gene.lim=1, mode=mode, epsilon)
-    } else{
+    } else {
         mat.sample.gene.ns.Damage <- matrix(1, nrow=nrow(mat.sample.gene.ns), ncol=ncol(mat.sample.gene.ns))
     }
     mat.sample.gene.ns.ccf <- pat.vs.genes(sample.mutations[sample.mutations$variant_classification != 'Silent',], genes, valueCol='ccf', sample.gene.lim=1, mode=mode, epsilon)
@@ -596,7 +596,7 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
                                   'nonsilent_CCF_sum' = observed.mut.ns.ccf[top],
                                   'silent'= observed.mut.s[top],
                                   'silent_CCF_sum' = observed.mut.s.ccf[top],                                  
-                                  'indels'= n.indels[top],
+                                  'indels'= as.numeric(n.indels[top]),
                                   'background_mut_prob'=bcgr.prob[top],
                                   'ccf_mean'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
                                   'ccf_median'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
