@@ -14,7 +14,7 @@
 #'  }
 #' @docType data
 #' @usage lawrence.df
-#' @format data grame
+#' @format data frame
 #' @source Suplementary matirial from Lawrence paper: \url{http://www.ncbi.nlm.nih.gov/pubmed/23770567}.
 # @author Hana Susak, 1/4/2014
 #' @keywords data
@@ -37,7 +37,7 @@ NULL
 #'  }
 #' @docType data
 #' @usage length.genes
-#' @format data grame
+#' @format data frame
 # @source Suplementary matirial from Lawrence paper: \url{http://www.ncbi.nlm.nih.gov/pubmed/23770567}.
 # @author Hana Susak, 1/4/2014
 #' @keywords data
@@ -75,7 +75,7 @@ NULL
 NULL
 
 #' @name sample.genes.mutect
-#' @title Genes length by NCBI, length which was covered by sequencing,  
+#' @title CLL MAF like file  
 #' @description This data frame containts information about SNVs and InDels that are reported as part of CLL project. 
 #' There is 7860 rows and each row represents annotated SNV/InDel reported in one of 337 patients with CLL. 
 #' These are filtered SNVs and InDels for segmental duplication, exonix or splicing, intersection of used kits region, etc.
@@ -102,7 +102,7 @@ NULL
 #'  }
 #' @docType data
 #' @usage sample.genes.mutect
-#' @format data grame
+#' @format data frame
 # @source Suplementary matirial from Lawrence paper: \url{http://www.ncbi.nlm.nih.gov/pubmed/23770567}.
 # @author Hana Susak, 1/4/2014
 #' @keywords data

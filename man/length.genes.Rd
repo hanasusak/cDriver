@@ -4,7 +4,7 @@
 \name{length.genes}
 \alias{length.genes}
 \title{Genes length by NCBI, length which was covered by sequencing,}
-\format{data grame}
+\format{data frame}
 \usage{
 length.genes
 }

@@ -137,7 +137,7 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     }
     
     if (is.null(genes)){
-        message('In the function bcgr you did not provide list of genes which were sequenced, union of  all protein coding genes (all.genes.length) and your genes is taken')
+        message('In the function bcgr you did not provide list of genes which were sequenced, union of all protein coding genes (first column of all.genes.length) and your genes is taken')
         #genes <- unique(sample.mutations$hugo_symbol)
         genes <-  as.character(union(all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
         
@@ -285,7 +285,7 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     }
       
     if (is.null(genes)){
-        message('In the function bcgr.lawrence you did not provide list of genes which were sequenced, union of  all protein coding genes (all.genes.lengths) and your genes is taken')
+        message('In the function bcgr.lawrence you did not provide list of genes which were sequenced, union of all protein coding genes (first column of all.genes.length) and your genes is taken')
         
         genes <- as.character(union(all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
     }

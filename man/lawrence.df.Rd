@@ -4,7 +4,7 @@
 \name{lawrence.df}
 \alias{lawrence.df}
 \title{Lawrence's paper information}
-\format{data grame}
+\format{data frame}
 \source{
 Suplementary matirial from Lawrence paper: \url{http://www.ncbi.nlm.nih.gov/pubmed/23770567}.
 }

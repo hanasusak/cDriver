@@ -3,8 +3,8 @@
 \docType{data}
 \name{sample.genes.mutect}
 \alias{sample.genes.mutect}
-\title{Genes length by NCBI, length which was covered by sequencing,}
-\format{data grame}
+\title{CLL MAF like file}
+\format{data frame}
 \usage{
 sample.genes.mutect
 }
