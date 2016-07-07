@@ -36,3 +36,9 @@ Then you rename it as cDriver.tar.gz and you can install it from Shell as mentio
 R CMD INSTALL cDriver.tar.gz
 
 ```
+
+or
+
+Go to this [link](https://github.com/hanasusak/cDriver_tools), what is another github repository.
+There you can download wrapper for cDriver to run analysis from command line wihout any programing knowledge.
+
