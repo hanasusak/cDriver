@@ -75,8 +75,7 @@ plotSamplesMut <- function(sample.mutations, indels=TRUE, silent=TRUE, fill=FALS
     # take only exonic
     suppressWarnings( sample.mutations <-  exonic.only(sample.mutations))
     
-   
-    
+      
     if (indels){
         #indel
         sample.gene.indels <- sample.mutations[sample.mutations$variant_type %in% c('INS', 'DEL' ),]
@@ -124,10 +123,9 @@ plotSamplesMut <- function(sample.mutations, indels=TRUE, silent=TRUE, fill=FALS
         p1 <- ggplot(data=sample.gene.all, aes_string('tumor_sample_barcode', fill='typeMut')) + geom_bar(position='stack') + 
             scale_y_continuous(name='Count', breaks=round(seq(0, max.y, length.out=10)), expand = c(0, 0))  
     }
-    p1 <- p1 +  scale_x_discrete(expand = c(0, 0), drop=FALSE) +
+    p1 <- p1 +  scale_x_discrete( expand = c(0, 0), drop=FALSE) +
         theme_bw(base_size = 10) + 
         scale_fill_manual(values=c( "orange4",'orange1',"steelblue3")) + 
-        xlab('Sample ID' ) +
         theme( axis.text.x = element_text(size = 10 *0.5, angle = 90, hjust = 0.8, vjust=0.5, colour = "grey50")) + 
         theme(axis.title.x=element_text(angle=0, vjust=+0.5, size = 10 )) +
         guides(fill = guide_legend(title = "Mutation type"))
@@ -137,7 +135,7 @@ plotSamplesMut <- function(sample.mutations, indels=TRUE, silent=TRUE, fill=FALS
   
     #return original names
     colnames(sample.mutations)[1:num.col] <- original.col.names
-    
+    p1 <- p1 + xlab('Sample ID')
     
     p1
 }
