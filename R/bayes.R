@@ -203,7 +203,7 @@ pat.vs.genes <- function (sample.mutations, genes = NULL, valueCol = NULL, Hugo_
 
 #' Bayesina risk inference model.
 #' @description
-#'   \code{bayes.risk} function performs by runing Bayesian risk inference model when priots are set by user and liklihood is calculated from given data of SNVs/InDels.
+#'   \code{bayes.risk} function performs by runing Bayesian risk inference model when priors are set by user and liklihood is calculated from given data of SNVs/InDels.
 #' @param sample.mutations data frame with SNVs and InDels in MAF like format.  
 #' Columns (with exactly same names) which \code{sample.mutations} should have are: 
 #' \itemize{ 
@@ -217,7 +217,7 @@ pat.vs.genes <- function (sample.mutations, genes = NULL, valueCol = NULL, Hugo_
 #'          There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence} and \code{bcgr.combine}.
 #' @param genes vector of genes which were sequenced. 
 #' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.
-#' @param prior.sick a numeric value representing incidence of tumor in population. Set by default to 0.00007 .
+#' @param prior.sick a numeric value representing incidence of tumor in population. Set by default to 0.0045 .
 #' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs/Indels.
@@ -245,7 +245,7 @@ pat.vs.genes <- function (sample.mutations, genes = NULL, valueCol = NULL, Hugo_
 #' head(risk.genes)  
 #' }
 #' @export
-bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.00007, 
+bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.0045, 
     Variant_Classification=NULL, Hugo_Symbol=NULL, Tumor_Sample_Barcode=NULL, CCF=NULL, Damage_score=NULL , mode='MAX', epsilon=0.05 ) {
     
     if (is.atomic(sample.mutations)) {
@@ -355,10 +355,8 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
     
     #return original names
     colnames(sample.mutations)[1:num.col] <- original.col.names
-    
-    
-    return(final.df.bayes1)
-    
+        
+    return(final.df.bayes1)    
 }
 
 

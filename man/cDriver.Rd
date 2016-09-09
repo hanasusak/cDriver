@@ -16,6 +16,7 @@ Useful functions:
      \item \code{bayes.risk}
      \item \code{bayes.driver}
      \item \code{combine.ranking}
+     \item \code{cut.off.risk}
      \item \code{plotSamplesMut}
      \item \code{plotMutChange}
      \item \code{boxplotCCF.mutations}
