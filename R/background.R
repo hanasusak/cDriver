@@ -74,13 +74,17 @@ exonic.only <- function(sample.mutations, Variant_Classification=NULL){
 #' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV in given cohort).
 #' Default is NULL value and then list of unique genes is takend from \code{sample.mutations}.
 #' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Default is NULL value (in this case \code{sample.mutations} should already have this column). 
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @details With assumption of neutral selections, function estimates expected number of nonsilent mutations from observed number of silent mutations.
 #'  Na (number of all possible nonsilent substitutions) and Ns (number of all possible silent substitutions) are taken from Lawrence paper.
 #'  They are provdied in this package in file lawrence.RData.
@@ -225,12 +229,16 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
 #' If gene is not found in this data frame, then median value is taken from listed genes in this data frame.
 #' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @details Function uses \code{sample.mutations} just to estimate number of nonsilent mutations per patient.
 #' @return a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
 #' @keywords Lawrence
@@ -385,12 +393,16 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
 #' If gene is not found in this data frame, then median value is taken from listed genes in this data frame.
 #' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#'      Column with this name should not already exist in \code{sample.mutations}.
 #' @return a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
 #' @keywords Lawrence
 #' @examples
@@ -402,8 +414,8 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
 #' @references \url{http://www.ncbi.nlm.nih.gov/pubmed/23770567}.
 #' @export
 bcgr.combine <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Variant_Classification=NULL, Hugo_Symbol=NULL, Tumor_Sample_Barcode=NULL, CCF=NULL){
-    na.p.lawrence <- bcgr.lawrence(sample.mutations, genes=genes, lengthGenes=lengthGenes, Variant_Classification, Hugo_Symbol, Tumor_Sample_Barcode, CCF)
-    na.p.silent <- bcgr(sample.mutations, genes=genes, Variant_Classification, Hugo_Symbol, Tumor_Sample_Barcode, CCF)
+    na.p.lawrence <- bcgr.lawrence(sample.mutations, genes=genes, lengthGenes=lengthGenes, Variant_Classification=Variant_Classification, Hugo_Symbol=Hugo_Symbol, Tumor_Sample_Barcode=Tumor_Sample_Barcode, CCF=CCF)
+    na.p.silent <- bcgr(sample.mutations, genes=genes, Variant_Classification=Variant_Classification, Hugo_Symbol=Hugo_Symbol, Tumor_Sample_Barcode=Tumor_Sample_Barcode, CCF=CCF)
     if (is.null(genes)){
         # make it not sensitive to lower/upper case in column names
         original.col.names <- colnames(sample.mutations)
