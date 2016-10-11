@@ -120,8 +120,8 @@ cutoff.risk <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulation
     cutt.off <- suppressWarnings(max(max(which(df.rank.combine$fdr.value < fdr)), 0, na.rm=T))
     print(paste0('Suggested cut-off for expected ',fdr*100,'% FDR based on ',n,' random simulations, is at gene rank: ',cutt.off))
     
-    post.prob.cut <- df.rank.combine[cutt.off,'postProb.x']
-    
+    #post.prob.cut <- df.rank.combine[cutt.off,'postProb.x']
+    post.prob.cut <- min(df.rank.combine[cutt.off, "postProb.x"],1)
     df.all <- rbind.data.frame(true.model,df.random.melt,df.random.final)
     if(plot.save){
         p1 <- ggplot(df.all, aes_string('rank', 'postProb', group='perm_number', colour = 'type', alpha='type', size='type')) +
@@ -144,7 +144,7 @@ cutoff.risk <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulation
             scale_alpha_manual(values = c(0.5,1,1)) +
             scale_color_manual(values = c("darkgray", "black","blue")) + 
             annotate("text", x = cutt.off*1.05, y = post.prob.cut*1.05, label = paste0(cutt.off, ' ranking'), vjust=0, hjust=0, size=6) +
-            xlim(0,cutt.off*3)  + ggtitle("Bayesian Hazard (Risk) model with permutations") + theme_bw()
+            xlim(0,max(20,cutt.off)*3)  + ggtitle("Bayesian Hazard (Risk) model with permutations") + theme_bw()
         name <-paste0('ZOOM_Bayes-Risk_Cut-off-suggestion_',n,'-simulations_',fdr*100,'-fdr.pdf')
         pdf(name, width = 10, height = 8, useDingbats = FALSE )
             suppressWarnings(print(p2))
@@ -275,7 +275,8 @@ cutoff.driver <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulati
     cutt.off <- suppressWarnings(max(max(which(df.rank.combine$fdr.value < fdr)), 0, na.rm=T))
     print(paste0('Suggested cut-off for expected ',fdr*100,'% FDR based on ',n,' random simulations, is at gene rank: ',cutt.off))
     
-    post.prob.cut <- df.rank.combine[cutt.off,'postProb.x']
+    #post.prob.cut <- df.rank.combine[cutt.off,'postProb.x']
+    post.prob.cut <- min(df.rank.combine[cutt.off, "postProb.x"],1)
     df.all <- rbind.data.frame(true.model,df.random.melt,df.random.final)
    
     if(plot.save){
@@ -297,7 +298,7 @@ cutoff.driver <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulati
             scale_alpha_manual(values = c(0.5,1,1)) +
             scale_color_manual(values = c("darkgray", "black","blue")) + 
             annotate("text", x = cutt.off*1.05, y = post.prob.cut*1.05, label = paste0(cutt.off, ' ranking'), vjust=0, hjust=0, size=6) +
-            xlim(0,cutt.off*3)  + ggtitle("Bayesian Driver model with permutations")  + theme_bw()
+            xlim(0,max(20,cutt.off)*3)  + ggtitle("Bayesian Driver model with permutations")  + theme_bw()
         name <- paste0('ZOOM_Bayes-Driver_Cut-off-suggestion_',n,'-simulations_',fdr*100,'-fdr.pdf')
         pdf(name, width = 10, height = 8, useDingbats = FALSE )
         suppressWarnings(print(p2))
