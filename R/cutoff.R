@@ -138,7 +138,7 @@ cutoff.risk <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulation
         dev.off()
         
         p2 <- ggplot(df.all, aes_string('rank', 'postProb', group='perm_number', colour = 'type', alpha='type', size='type')) +
-            geom_segment(x = cutt.off, y = 0, xend = cutt.off, yend = post.prob.cut, colour = "red", size=1, show_guide=FALSE) +
+            geom_segment(x = cutt.off, y = 0, xend = cutt.off, yend = post.prob.cut, colour = "red", size=1, show.legend=FALSE) +
             geom_line() + geom_hline(yintercept=post.prob.cut,color='red') +
             scale_size_manual(values = c(1,1,1.5)) +   
             scale_alpha_manual(values = c(0.5,1,1)) +
@@ -292,7 +292,7 @@ cutoff.driver <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulati
             suppressWarnings(print(p1))
         dev.off()
         p2 <-ggplot(df.all, aes_string('rank', 'postProb', group='perm_number', colour = 'type', alpha='type', size='type')) +
-            geom_segment(x = cutt.off, y = 0, xend = cutt.off, yend = post.prob.cut, colour = "red", size=1, show_guide=FALSE) +
+            geom_segment(x = cutt.off, y = 0, xend = cutt.off, yend = post.prob.cut, colour = "red", size=1, show.legend=FALSE) +
             geom_line() + geom_hline(yintercept=post.prob.cut,color='red') +
             scale_size_manual(values = c(1,1,1.5)) +   
             scale_alpha_manual(values = c(0.5,1,1)) +
