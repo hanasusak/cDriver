@@ -117,7 +117,7 @@ cutoff.risk <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulation
        
     df.rank.combine <- merge(x=true.model, y=df.random.final, by='rank', all.t=T)
     df.rank.combine$fdr.value <- apply(df.rank.combine,1, function (x) sum(df.rank.combine$postProb.y >= as.numeric(x["postProb.x"] ),na.rm = T )/ sum(df.rank.combine$postProb.x >=  as.numeric(x["postProb.x"]),na.rm = T ) )
-    cutt.off <- max(which(df.rank.combine$fdr.value < fdr))
+    cutt.off <- suppressWarnings(max(max(which(df.rank.combine$fdr.value < fdr)), 0, na.rm=T))
     print(paste0('Suggested cut-off for expected ',fdr*100,'% FDR based on ',n,' random simulations, is at gene rank: ',cutt.off))
     
     post.prob.cut <- df.rank.combine[cutt.off,'postProb.x']
@@ -272,7 +272,7 @@ cutoff.driver <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulati
     
     df.rank.combine <- merge(x=true.model, y=df.random.final, by='rank', all.t=T)
     df.rank.combine$fdr.value <- apply(df.rank.combine,1, function (x) sum(df.rank.combine$postProb.y >= as.numeric(x["postProb.x"] ),na.rm = T )/ sum(df.rank.combine$postProb.x >=  as.numeric(x["postProb.x"] ),na.rm = T ) )
-    cutt.off <- max(which(df.rank.combine$fdr.value < fdr))
+    cutt.off <- suppressWarnings(max(max(which(df.rank.combine$fdr.value < fdr)), 0, na.rm=T))
     print(paste0('Suggested cut-off for expected ',fdr*100,'% FDR based on ',n,' random simulations, is at gene rank: ',cutt.off))
     
     post.prob.cut <- df.rank.combine[cutt.off,'postProb.x']

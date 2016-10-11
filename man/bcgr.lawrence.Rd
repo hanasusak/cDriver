@@ -27,16 +27,20 @@ Default is NULL value and then Length of genes is taken from data set \code{leng
 If gene is not found in this data frame, then median value is taken from listed genes in this data frame.}
 
 \item{Variant_Classification}{(optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not).
-Default is NULL value (in this case \code{sample.mutations} should already have this column)}
+Default is NULL value (in this case \code{sample.mutations} should already have this column)
+Column with this name should not already exist in \code{sample.mutations}.}
 
 \item{Hugo_Symbol}{(optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
-Default is NULL value (in this case \code{sample.mutations} should already have this column)}
+Default is NULL value (in this case \code{sample.mutations} should already have this column)
+Column with this name should not already exist in \code{sample.mutations}.}
 
 \item{Tumor_Sample_Barcode}{(optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs.
-Default is NULL value (in this case \code{sample.mutations} should already have this column)}
+Default is NULL value (in this case \code{sample.mutations} should already have this column)
+Column with this name should not already exist in \code{sample.mutations}.}
 
 \item{CCF}{(optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs.
-Default is NULL value (in this case \code{sample.mutations} should already have this column)}
+Default is NULL value (in this case \code{sample.mutations} should already have this column)
+Column with this name should not already exist in \code{sample.mutations}.}
 }
 \value{
 a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
