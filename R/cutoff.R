@@ -114,9 +114,22 @@ cutoff.risk <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulation
     df.random.final$perm_number <- 'median_perms'
     df.random.final<- df.random.final[,c('Hugo_Symbol','postProb','rank','type','perm_number')]
 
-       
     df.rank.combine <- merge(x=true.model, y=df.random.final, by='rank', all.t=T)
-    df.rank.combine$fdr.value <- apply(df.rank.combine,1, function (x) sum(df.rank.combine$postProb.y >= as.numeric(x["postProb.x"] ),na.rm = T )/ sum(df.rank.combine$postProb.x >=  as.numeric(x["postProb.x"]),na.rm = T ) )
+    #df.rank.combine$fdr.value <- apply(df.rank.combine,1, function (x) sum(df.rank.combine$postProb.y >= as.numeric(x["postProb.x"] ),na.rm = T )/ sum(df.rank.combine$postProb.x >=  as.numeric(x["postProb.x"]),na.rm = T ) )
+    df.rank.combine$fdr.value <- as.numeric(sapply(1:nrow(df.rank.combine), function (x) sum(df.rank.combine[1:x,'postProb.y'] >= as.numeric(df.rank.combine[x,"postProb.x"] ),na.rm = T )/ sum(df.rank.combine[1:x,'postProb.x'] >=  as.numeric(df.rank.combine[x,"postProb.x"]),na.rm = T ) ))
+    if(permutationResults.save){
+        df.rank.combine2 <-df.rank.combine
+        df.rank.combine2$type.x <- NULL
+        df.rank.combine2$perm_number.x <- NULL
+        df.rank.combine2$Hugo_Symbol.y <- NULL
+        df.rank.combine2$type.y <- NULL
+        df.rank.combine2$perm_number.y <- NULL
+        colnames(df.rank.combine2) <- c('rank','true_Hugo_Symbol','true_post_probablity','simulation_post_probablity', 'estimated_fdr')
+        write.table(df.rank.combine2, file=paste0('FDR_estimate_Bayes_risk_',n,'_permutations.txt'),
+                    sep='\t', row.names = F, col.names = T, quote = F)
+        rm(df.rank.combine2)
+    }
+    
     cutt.off <- suppressWarnings(max(max(which(df.rank.combine$fdr.value < fdr)), 0, na.rm=T))
     print(paste0('Suggested cut-off for expected ',fdr*100,'% FDR based on ',n,' random simulations, is at gene rank: ',cutt.off))
     
@@ -271,7 +284,20 @@ cutoff.driver <- function(sample.mutations,  bcgr.prob, n=100, fdr=0.1, simulati
     
     
     df.rank.combine <- merge(x=true.model, y=df.random.final, by='rank', all.t=T)
-    df.rank.combine$fdr.value <- apply(df.rank.combine,1, function (x) sum(df.rank.combine$postProb.y >= as.numeric(x["postProb.x"] ),na.rm = T )/ sum(df.rank.combine$postProb.x >=  as.numeric(x["postProb.x"] ),na.rm = T ) )
+    #df.rank.combine$fdr.value <- apply(df.rank.combine,1, function (x) sum(df.rank.combine$postProb.y >= as.numeric(x["postProb.x"] ),na.rm = T )/ sum(df.rank.combine$postProb.x >=  as.numeric(x["postProb.x"] ),na.rm = T ) )
+    df.rank.combine$fdr.value <- as.numeric(sapply(1:nrow(df.rank.combine), function (x) sum(df.rank.combine[1:x,'postProb.y'] >= as.numeric(df.rank.combine[x,"postProb.x"] ),na.rm = T )/ sum(df.rank.combine[1:x,'postProb.x'] >=  as.numeric(df.rank.combine[x,"postProb.x"]),na.rm = T ) ))
+    if(permutationResults.save){
+        df.rank.combine2 <-df.rank.combine
+        df.rank.combine2$type.x <- NULL
+        df.rank.combine2$perm_number.x <- NULL
+        df.rank.combine2$Hugo_Symbol.y <- NULL
+        df.rank.combine2$type.y <- NULL
+        df.rank.combine2$perm_number.y <- NULL
+        colnames(df.rank.combine2) <- c('rank','true_Hugo_Symbol','true_post_probablity','simulation_post_probablity', 'estimated_fdr')
+        write.table(df.rank.combine2, file=paste0('FDR_estimate_Bayes_driver_',n,'_permutations.txt'),
+                    sep='\t', row.names = F, col.names = T, quote = F)
+        rm(df.rank.combine2)
+    }
     cutt.off <- suppressWarnings(max(max(which(df.rank.combine$fdr.value < fdr)), 0, na.rm=T))
     print(paste0('Suggested cut-off for expected ',fdr*100,'% FDR based on ',n,' random simulations, is at gene rank: ',cutt.off))
     
