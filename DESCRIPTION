@@ -20,10 +20,10 @@ Depends:
 Imports:
     data.table,
     ggplot2,
-    reshape2,
     Rmpfr
 License: GPL-3
 LazyData: true
 Suggests:
     testthat,
     methods
+RoxygenNote: 5.0.1

@@ -6,10 +6,13 @@
 ######################################################################################
 #' @import ggplot2
 #' @import data.table
-#' @import reshape2
+## @import reshape2
 #' @import Rmpfr
-
-
+#' @importFrom stats sd aggregate as.formula prcomp xtabs
+#' @importFrom grDevices dev.off pdf
+#' @importFrom utils methods write.table
+## @importFrom base apply
+ 
 # Function to create matrix genes versus patients. 
 # Values of matrix can be counts of mutations, or sum of some other variable.
 # Also it user can provide upper limit for sum of this value for gene-patienet pair.
@@ -321,9 +324,9 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
     bayes.risk <- (prior.sick * gene.mutated.if.sick[genes])/(prior.sick*gene.mutated.if.sick[genes] + prior.healthy*gene.mutated.if.healthy[genes])
     
     #additional columns
-    observed.mut.ns <- apply(mat.sample.gene.ns,1,function(x) sum(x >0))
+    observed.mut.ns <- base::apply(as.matrix(mat.sample.gene.ns),c(1),function(x) sum(x >0))
     total.mut.ns <- rowSums(mat.sample.gene.ns)    
-    observed.mut.s <- apply(mat.sample.gene.s,1,function(x) sum(x >0))
+    observed.mut.s <- base::apply(as.matrix(mat.sample.gene.s),c(1),function(x) sum(x >0))
     observed.mut.ns.ccf <- rowSums(mat.sample.gene.ns.ccf)
     observed.mut.s.ccf <- rowSums(mat.sample.gene.s.ccf)
     n <- rowSums(mat.ns.somatic)
@@ -344,9 +347,9 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
                                   'silent_CCF_sum' = observed.mut.s.ccf[top],                                  
                                   'indels'= as.numeric(n.indels[top]),
                                   'background_mut_prob'=bcgr.prob[top],
-                                  'ccf_mean'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
-                                  'ccf_median'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
-                                  'ccf_sd'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])),
+                                  'ccf_mean'= base::apply(as.matrix(mat.sample.gene.ns.ccf[top,]),1,function(x) mean(x[x!=0])),
+                                  'ccf_median'= base::apply(as.matrix(mat.sample.gene.ns.ccf[top,]),1,function(x) median(x[x!=0])),
+                                  'ccf_sd'= base::apply(as.matrix(mat.sample.gene.ns.ccf[top,]),1,function(x) sd(x[x!=0])),
                                   'rank'=1:length(top) 
                                   )
     
@@ -440,7 +443,7 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
       
     
     if(is.null(driver.genes) & is.null(gene.mut.driver)){
-        driver.genes <- driver.genes.concensus
+        driver.genes <- cDriver::driver.genes.concensus
     } 
     
     if (is.null(prior.driver)){
@@ -549,7 +552,7 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
         
     
         # only to be able to run as Rscript
-        library(methods)
+        requireNamespace(methods)
         
         gene.driver.given.patients2 <- (prior.driver * mpfr(gene.mut.if.driver[genes2], precBits = 128)^n[genes2] * mpfr(gene.notmut.if.driver[genes2], precBits = 128)^m[genes2])/
             ( (prior.driver* mpfr(gene.mut.if.driver[genes2], precBits = 128)^n[genes2]*mpfr(gene.notmut.if.driver[genes2], precBits = 128)^m[genes2])+
@@ -569,9 +572,9 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
    
     
     #additional columns
-    observed.mut.ns <- apply(mat.sample.gene.ns,1,function(x) sum(x >0))
+    observed.mut.ns <- base::apply(mat.sample.gene.ns,1,function(x) sum(x >0))
     total.mut.ns <- rowSums(mat.sample.gene.ns)    
-    observed.mut.s <- apply(mat.sample.gene.s,1,function(x) sum(x >0))
+    observed.mut.s <- base::apply(mat.sample.gene.s,1,function(x) sum(x >0))
     observed.mut.ns.ccf <- rowSums(mat.sample.gene.ns.ccf)
     observed.mut.s.ccf <- rowSums(mat.sample.gene.s.ccf)
     n.indels <- table(sample.mutations[sample.mutations$variant_type %in% c('DEL', 'INS'),'hugo_symbol'], exclude=F)
@@ -596,9 +599,9 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
                                   'silent_CCF_sum' = observed.mut.s.ccf[top],                                  
                                   'indels'= as.numeric(n.indels[top]),
                                   'background_mut_prob'=bcgr.prob[top],
-                                  'ccf_mean'= apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
-                                  'ccf_median'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
-                                  'ccf_sd'=apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])),
+                                  'ccf_mean'= base::apply(mat.sample.gene.ns.ccf[top,],1,function(x) mean(x[x!=0])),
+                                  'ccf_median'= base::apply(mat.sample.gene.ns.ccf[top,],1,function(x) median(x[x!=0])),
+                                  'ccf_sd'= base::apply(mat.sample.gene.ns.ccf[top,],1,function(x) sd(x[x!=0])),
                                   'gene_mut_if_driver'=gene.mut.if.driver[top],
                                   'rank'=1:length(top)
     )

@@ -143,7 +143,7 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     if (is.null(genes)){
         message('In the function bcgr you did not provide list of genes which were sequenced, union of all protein coding genes (first column of all.genes.lengths) and your genes is taken')
         #genes <- unique(sample.mutations$hugo_symbol)
-        genes <-  as.character(union(all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
+        genes <-  as.character(union(cDriver::all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
         
     }
     
@@ -170,7 +170,7 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     observed.mut.s.ccf <- rowSums(mat.sample.gene.s.ccf)      
     
     # correction values
-    prim.corr.s.zero <- lawrence.df[genes,]$N_silent/lawrence.df[genes,]$N_nonsilent
+    prim.corr.s.zero <- cDriver::lawrence.df[genes,]$N_silent/cDriver::lawrence.df[genes,]$N_nonsilent
     names(prim.corr.s.zero) <- genes
   
     # indicator which genes are not provided in lawrence table
@@ -189,9 +189,9 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     names(observed.mut.s.ccf.cor) <- genes
     
     # estimation of n_a per gene from KaKs 
-    mean.NaNs <- mean((lawrence.df[genes,'N_nonsilent']/lawrence.df[genes,'N_silent']), na.rm=T)
+    mean.NaNs <- mean((cDriver::lawrence.df[genes,'N_nonsilent']/cDriver::lawrence.df[genes,'N_silent']), na.rm=T)
     
-    n_a <- observed.mut.s.ccf.cor[genes]*(lawrence.df[genes,'N_nonsilent']/lawrence.df[genes,'N_silent'])
+    n_a <- observed.mut.s.ccf.cor[genes]*(cDriver::lawrence.df[genes,'N_nonsilent']/cDriver::lawrence.df[genes,'N_silent'])
     names(n_a) <- genes
     if (sum(is.na(n_a)) > 0){
         warning(paste('For ',sum(is.na(n_a)),' genes there was no Na and Ns values (lawrence.df). Mean ratio of Na/Ns is taken for these genes'))
@@ -280,8 +280,8 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     if (is.null(lengthGenes)){
         message('You did not provide lenght of sequenced genes, so sum of lenghts of all exons for each gene is taken (all.genes.lengths).')
         
-        lengthGenes <- all.genes.lengths$Length
-        names(lengthGenes) <- all.genes.lengths$Hugo_Symbol
+        lengthGenes <- cDriver::all.genes.lengths$Length
+        names(lengthGenes) <- cDriver::all.genes.lengths$Hugo_Symbol
         
     } else if(  is.null(names(lengthGenes))) {
         if (!is.null(genes)){
@@ -295,7 +295,7 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     if (is.null(genes)){
         message('In the function bcgr.lawrence you did not provide list of genes which were sequenced, union of all protein coding genes (first column of all.genes.lengths) and your genes is taken')
         
-        genes <- as.character(union(all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
+        genes <- as.character(union(cDriver::all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
     }
     
     if(!is.factor(sample.mutations$hugo_symbol)){
@@ -313,7 +313,7 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     ## ako nema daj prosjecnu ali i warning
     
     # From lawrenc
-    mut.rate <- lawrence.df[genes,]$noncoding_mutation_rate
+    mut.rate <- cDriver::lawrence.df[genes,]$noncoding_mutation_rate
     names(mut.rate) <- genes
     if(sum(is.na(mut.rate))){
         proc.miss.mut.rate <- sum(is.na(mut.rate))/length(genes)
@@ -343,7 +343,7 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
         
     }
     
-    Ns.Na <- lawrence.df[genes,'N_silent']/lawrence.df[genes,'N_nonsilent']
+    Ns.Na <- cDriver::lawrence.df[genes,'N_silent']/cDriver::lawrence.df[genes,'N_nonsilent']
     if (sum(is.na(Ns.Na)) > 0){
         warning(paste('For ',sum(is.na(Ns.Na)),' genes there was no Na and Ns values (lawrence.df). Mean ratio of Ns/Na is taken for these genes'))
         Ns.Na[is.na(Ns.Na)] <- mean(Ns.Na, na.rm=T)
@@ -423,15 +423,17 @@ bcgr.combine <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Variant
         colnames(sample.mutations) <-  tolower(colnames(sample.mutations))
         
         #genes <- unique(sample.mutations$hugo_symbol)
-        genes <- as.character(union(all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
+        genes <- as.character(union(cDriver::all.genes.lengths$Hugo_Symbol, unique(sample.mutations$hugo_symbol)))
         
         #return original names
         colnames(sample.mutations)[1:num.col] <- original.col.names
         
     }
-    together <- as.data.frame(cbind(na.p.lawrence[genes], na.p.silent[genes]))
-    names(together) <- c('noncoding_lawrence','nonsilent_kaks')
-    gene.mutated.if.healthy <- apply(together,1,mean)
-
+    #together <- as.data.frame(cbind(na.p.lawrence[genes], na.p.silent[genes]))
+    #names(together) <- c('noncoding_lawrence','nonsilent_kaks')
+    #gene.mutated.if.healthy <- apply(as.matrix(together),1,mean)
+    gene.mutated.if.healthy <- (na.p.lawrence[genes] + na.p.silent[genes])/2
+    names(gene.mutated.if.healthy) <- genes
+    return(gene.mutated.if.healthy)
 }
 

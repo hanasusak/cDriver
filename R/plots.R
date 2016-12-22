@@ -5,9 +5,6 @@
 # plotc for cDriver
 ######################################################################################
 
-
-
-
 #' Plot mutations per sample distribution.
 #' @description
 #'   \code{plot.samplesMut} Function to plot samples mutation counts.  
@@ -223,7 +220,7 @@ plotMutChange <- function(sample.mutations, silent=TRUE, fill=TRUE,  Tumor_Sampl
     
     
     sample.mutations <- sample.mutations[sample.mutations$variant_type %in% c('SNP', 'DNP','TNP' ),]
-    sample.mutations$Change <- apply(sample.mutations, 1, function(x)paste(x['reference_allele'], x['tumor_seq_allele2'], sep=';') )
+    sample.mutations$Change <- base::apply(sample.mutations, 1, function(x)paste(x['reference_allele'], x['tumor_seq_allele2'], sep=';') )
     
     sample.mutations[sample.mutations$Change == 'G;T','Change'] <- 'C;A'
     sample.mutations[sample.mutations$Change == 'G;C','Change'] <- 'C;G'
