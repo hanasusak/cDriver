@@ -43,3 +43,6 @@ or
 Go to this [link](https://github.com/hanasusak/cDriver_tools), what is another github repository.
 There you can download wrapper for cDriver to run analysis from command line wihout any programing knowledge.
 
+# License
+This project is licensed under the terms of the MIT license.
+
