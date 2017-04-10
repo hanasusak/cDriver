@@ -7,12 +7,12 @@ Authors@R: c(
     person("Stephan", "Ossowski", role = "aut"),
     person("R Core team", role = "ctb", comment = "Some namespace and vignette code extracted from base R") )
 Description: The cDriver package provides several functions to calculate the cancer cell fraction 
-of somatic mutations and to rank genes based on a Bayesian inference model. The input file 
-is a tab separated column file similar to MAF files provided by TCGA. The user needs 
-to provide silent and nonsilent mutations detected in coding regions. Also, the R package 
-provides functions to estimate an FDR that allows the use to select the best number 
-of candidate driver genes. If user cant provide optional columns, the function will 
-use a pre-calculated default value.
+    of somatic mutations and to rank genes based on a Bayesian inference model. The input file 
+    is a tab separated column file similar to MAF files provided by TCGA. The user needs 
+    to provide silent and nonsilent mutations detected in coding regions. Also, the R package 
+    provides functions to estimate an FDR that allows the use to select the best number 
+    of candidate driver genes. If user cant provide optional columns, the function will 
+    use a pre-calculated default value.
 Depends:
     R (>= 3.1.0)
 Imports:
