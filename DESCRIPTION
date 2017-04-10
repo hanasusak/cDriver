@@ -6,15 +6,13 @@ Authors@R: c(
     person("Luis", "Zapata", role = "aut"),
     person("Stephan", "Ossowski", role = "aut"),
     person("R Core team", role = "ctb", comment = "Some namespace and vignette code extracted from base R") )
-Description: Package has several functions to help you calculate Cancer Cell
-    Fraction and rank genes based on posterior probability calculated with
-    Bayes inference models. Functions works with MAF like files, but some
-    differences exist (additional columns). User need to provide silent and non
-    silent mutations detected in exotic and splicing regions. Also some
-    functions recomand list of genes which were covered by probes and length
-    covered by sequencing of these genes. In case user can not provide optional
-    columns/info, function will replace variables with most likely/plausible
-    values.
+Description: The cDriver package provides several functions to calculate the cancer cell fraction 
+of somatic mutations and to rank genes based on a Bayesian inference model. The input file 
+is a tab separated column file similar to MAF files provided by TCGA. The user needs 
+to provide silent and nonsilent mutations detected in coding regions. Also, the R package 
+provides functions to estimate an FDR that allows the use to select the best number 
+of candidate driver genes. If user cant provide optional columns, the function will 
+use a pre-calculated default value.
 Depends:
     R (>= 3.1.0)
 Imports:
@@ -26,4 +24,4 @@ LazyData: true
 Suggests:
     testthat,
     methods
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
