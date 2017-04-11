@@ -67,4 +67,3 @@ df.final <- combine.ranking(list(df1, df2), min.mut = 2 )
 plotStaircase(sample.mutations=sample.genes.mutect, result.df=df.final)
 }
 }
-

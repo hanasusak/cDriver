@@ -9,9 +9,9 @@
 
 # Function to assign columns in case no header is provided or naming is not standard
 # (better practice would be to already have named columns as specified)
-# @param sample.mutations - data frame to which column need to be named
-# @param column - integer/numeric value for which we are assigning name
-# @param columnName - charachter value, new name of the column
+# @param sample.mutations - data frame to which column will be given a hedaer
+# @param column - integer/numeric value for each column assignment of header
+# @param columnName - character value, new header for the columns
 assign.columns <- function(sample.mutations, column, columnName){
 
     if (is.numeric(column)){
@@ -59,42 +59,42 @@ exonic.only <- function(sample.mutations, Variant_Classification=NULL){
 
 
 
-#' Background mutation rate calculated based on silent mutations.
+#' Background mutation rate calculated based on the observed silent mutations.
 #' @description
-#'   \code{bcgr} function calculates  background probability that gene is mutated based on frequency od silent mutations.
+#'   \code{bcgr} function calculates the background probability that a gene is mutated based on the frequency of silent mutations.
 #' @param sample.mutations data frame in MAF like format with nonsilent and silent mutations.  
-#' Columns (with exactly same names) which \code{sample.mutations} should have are: 
+#' Columns names/header in \code{sample.mutations} must be: 
 #' \itemize{ 
-#'      \item Variant_Classification column specifed by MAF format, used to distinguish between silent and nonsilent SNVs
-#'      \item Hugo_Symbol column specifed by MAF format, which reports gene for each SNV.
-#'      \item Tumor_Sample_Barcode column specifed by MAF format, reporting for each SNV in wich patient was found. 
-#'      \item CCF numeric column produce by \code{CCF} function.
+#'      \item Variant_Classification : column specified in the MAF format, which distinguishes between silent and nonsilent SNVs
+#'      \item Hugo_Symbol : column specified in the MAF format, which reports the gene name for each SNV.
+#'      \item Tumor_Sample_Barcode : column specified in the MAF format, which reports in wich patient the SNV was found. 
+#'      \item CCF : numeric column produce by \code{CCF} function, or calculated previously for each SNV.
 #' } 
 #' @param genes vector of genes which were sequenced. 
-#' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV in given cohort).
-#' Default is NULL value and then list of unique genes is takend from \code{sample.mutations}.
-#' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+#'      Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+#'      Default is NULL value and then list of unique genes is taken from \code{sample.mutations}.
+#' @param Variant_Classification (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs (Silent or not). 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column). 
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
+#' @param Hugo_Symbol (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
+#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
+#' @param CCF (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @details With assumption of neutral selections, function estimates expected number of nonsilent mutations from observed number of silent mutations.
-#'  Na (number of all possible nonsilent substitutions) and Ns (number of all possible silent substitutions) are taken from Lawrence paper.
-#'  They are provdied in this package in file lawrence.RData.
-#'  When expected number of nonsilent mutations for each gene is known, probability to get nonsilent mutation in each gene is calculated.
+#' @details Assuming neutral selection, the function estimates the expected number of nonsilent mutations from observed number of silent mutations.
+#'  Na (number of all possible nonsilent substitutions) and Ns (number of all possible silent substitutions) were taken from Lawrence paper.
+#'  They are provided in this package in the file lawrence.RData.
+#'  When the expected number of nonsilent mutations for each gene is known, the probability to get a nonsilent mutation in each gene is calculated.
 #'  This is based on 
-#' @return a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
+#' @return a numeric vector of the probabilities that a gene has a nonsilent mutation (not caused by cancer).
 #' @keywords background
 #' @examples 
 #' \donttest{
-#' # We first need CCF column
+#' # We first need the CCF column
 #' sample.genes.mutect <- CCF(sample.genes.mutect)
 #' somatic.background <- bcgr(sample.genes.mutect, length.genes$Hugo_Symbol)
 #' head(somatic.background)
@@ -209,38 +209,38 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     
 }
 
-#' Background mutation rate based on Lawrence's background mutation rate estimated on cohort of 12 different cancers.
+#' Background mutation rate based on Lawrence's background mutation rate estimated on a cohort of different cancers.
 #' @description
-#'   \code{bcgr.lawrence} function calculates  background probability that gene is mutated based on background somatic mutation rate 
-#'   provided in Lawrenc paper.
+#'   \code{bcgr.lawrence} function calculates the background probability that a gene is mutated based on the background somatic mutation rate 
+#'   provided in the Lawrence paper.
 #' @param sample.mutations data frame in MAF like format.  
-#' Columns (with exactly same names) which \code{sample.mutations} should have are: 
+#' Columns names/header in \code{sample.mutations} must be: 
 #' \itemize{ 
-#'      \item Variant_Classification column specifed by MAF format, used to distinguish between silent and nonsilent SNVs
-#'      \item Hugo_Symbol column specifed by MAF format, which reports gene for each SNV.
-#'      \item Tumor_Sample_Barcode column specifed by MAF format, reporting for each SNV in wich patient was found. 
-#'      \item CCF numeric column produce by \code{CCF} function.
+#'      \item Variant_Classification : column specified in the MAF format, which distinguishes between silent and nonsilent SNVs
+#'      \item Hugo_Symbol : column specified in the MAF format, which reports the gene name for each SNV.
+#'      \item Tumor_Sample_Barcode : column specified in the MAF format, which reports in wich patient the SNV was found. 
+#'      \item CCF : numeric column produce by \code{CCF} function, or calculated previously for each SNV.
 #' } 
 #' @param genes vector of genes which were sequenced. 
-#' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV in given cohort).
-#' Default is NULL value and then list of unique genes is takend from \code{sample.mutations}.
-#' @param lengthGenes numeric vector of lengths (suquenced) for \code{genes}. Should be given in same order as variable genes.
-#' Default is NULL value and then Length of genes is taken from data set \code{length.genes} (form package \code{cDriver}) as column Length. 
-#' If gene is not found in this data frame, then median value is taken from listed genes in this data frame.
-#' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+#'      Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+#'      Default is NULL value and then the list of the unique genes is taken from \code{sample.mutations}.
+#' @param lengthGenes numeric vector of the lengths (suquenced) for all \code{genes}. Vector should have the same order as given in the variable genes.
+#'      Default is NULL value and then the length of the genes is taken from data set \code{length.genes} (form package \code{cDriver}) as defined in column length. 
+#'      If a gene is not found in this data frame, then the median value is taken from the gene list provided by default.
+#' @param Variant_Classification (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs (Silent or not). 
+#'      Default is NULL value (in this case \code{sample.mutations} should already have this column). 
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Hugo_Symbol (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
+#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
+#' @param CCF (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#'      Column with this name should not already exist in \code{sample.mutations}.
-#' @details Function uses \code{sample.mutations} just to estimate number of nonsilent mutations per patient.
-#' @return a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
+#' @details Function uses \code{sample.mutations} to estimate the expected number of nonsilent mutations per patient.
+#' @return a  numeric vector of the probabilites that a gene has a nonsilent mutation (not caused by cancer).
 #' @keywords Lawrence
 #' @examples 
 #' bcgr.L <- bcgr.lawrence(sample.genes.mutect, length.genes$Hugo_Symbol, length.genes$Coverd_len)
@@ -374,36 +374,36 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     gene.mutated.if.healthy  
 }
 
-#' Combining two somatic background mutation probability, outputs of functions bcgr.lawrence and bcgr
+#' Combining two somatic background mutation probability values (obtained from functions bcgr.lawrence and bcgr)
 #' @description
-#'   \code{bcgr.combine} function calculates both somatic background mutation probabilities (using bcgr.lawrence and bcgr functions) and take average value for each gene
+#'   \code{bcgr.combine} function first calculates both somatic background mutation probabilities (using bcgr.lawrence and bcgr functions) and then it takes the average value for each gene
 #' @param sample.mutations data frame in MAF like format.  
-#' Columns (with exactly same names) which \code{sample.mutations} should have are: 
+#' Columns names/header in \code{sample.mutations} must be: e: 
 #' \itemize{ 
-#'      \item Variant_Classification column specifed by MAF format, used to distinguish between silent and nonsilent SNVs
-#'      \item Hugo_Symbol column specifed by MAF format, which reports gene for each SNV.
-#'      \item Tumor_Sample_Barcode column specifed by MAF format, reporting for each SNV in wich patient was found. 
-#'      \item CCF numeric column produce by \code{CCF} function.
+#'      \item Variant_Classification : column specified in the MAF format, which distinguishes between silent and nonsilent SNVs
+#'      \item Hugo_Symbol : column specified in the MAF format, which reports the gene name for each SNV.
+#'      \item Tumor_Sample_Barcode : column specified in the MAF format, which reports in wich patient the SNV was found. 
+#'      \item CCF : numeric column produce by \code{CCF} function, or calculated previously for each SNV.
 #' } 
 #' @param genes vector of genes which were sequenced. 
-#' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV in given cohort).
-#' Default is NULL value and then list of unique genes is takend from \code{sample.mutations}.
-#' @param lengthGenes numeric vector of lengths (suquenced) for \code{genes}. Should be given in same order as variable genes.
-#' #' Default is NULL value and then Length of genes is taken from data set \code{length.genes} (form package \code{cDriver}) as column Length. 
-#' If gene is not found in this data frame, then median value is taken from listed genes in this data frame.
-#' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+#'      Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+#'      Default is NULL value and then the list of the unique genes is taken from \code{sample.mutations}.
+#' @param lengthGenes numeric vector of the lengths (suquenced) for all \code{genes}. Vector should have the same order as given in the variable genes.
+#'      Default is NULL value and then the length of the genes is taken from data set \code{length.genes} (form package \code{cDriver}) as defined in column length. 
+#'      If a gene is not found in this data frame, then the median value is taken from the gene list provided by default.
+#' @param Variant_Classification (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs (Silent or not). 
+#'      Default is NULL value (in this case \code{sample.mutations} should already have this column). 
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Hugo_Symbol (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
+#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
+#' @param CCF (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
 #'      Column with this name should not already exist in \code{sample.mutations}.
-#' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#'      Column with this name should not already exist in \code{sample.mutations}.
-#' @return a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
+#' @return a numeric vector of the probabilites that a gene has a nonsilent mutation (not caused by cancer).
 #' @keywords Lawrence
 #' @examples
 #' # First we need to calculate CCF

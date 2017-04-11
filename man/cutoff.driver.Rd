@@ -88,4 +88,3 @@ print(suggested.cut.off)
 \seealso{
 \code{\link{CCF}}, \code{\link{bcgr}}, \code{\link{bcgr.lawrence}}, \code{\link{bcgr.combine}}   and \code{\link{bayes.driver}}
 }
-

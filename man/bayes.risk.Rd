@@ -69,4 +69,3 @@ head(risk.genes)
 \code{\link{bcgr}}, \code{\link{bcgr.lawrence}}  and \code{\link{bcgr.combine}} for obtaining bcgr.prob variable.
 }
 \keyword{risk}
-

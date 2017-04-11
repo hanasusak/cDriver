@@ -27,4 +27,3 @@ Additional columns with usefull info are contained in resulting data frame also.
 \code{\link{bayes.risk}}, \code{\link{bayes.driver}}   for obtaining bayes.risk.rank and bayes.driver.rank variables.
 }
 \keyword{combine}
-

@@ -24,5 +24,5 @@ Data frame has 2 columns.
  \item Length length of genes reported in NCBI
  }
 }
-\keyword{data}
 
+\keyword{data}

@@ -24,5 +24,5 @@ Data frame has 5 columns.
  \item p_by_len  probability that gene get one mutation, if each base pair had same chance; Coverd_len/sum(length.genes$Coverd_len)
  }
 }
-\keyword{data}
 
+\keyword{data}

@@ -54,4 +54,3 @@ df2 <- CCF(df)
 head(df2)
 }
 \keyword{CCF}
-

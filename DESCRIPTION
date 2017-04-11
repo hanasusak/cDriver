@@ -10,7 +10,7 @@ Description: The cDriver package provides several functions to calculate the can
     of somatic mutations and to rank genes based on a Bayesian inference model. The input file 
     is a tab separated column file similar to MAF files provided by TCGA. The user needs 
     to provide silent and nonsilent mutations detected in coding regions. Also, the R package 
-    provides functions to estimate an FDR that allows the use to select the best number 
+    provides a function to estimate the FDR at a particular rank, and therefore select a set
     of candidate driver genes. If user cant provide optional columns, the function will 
     use a pre-calculated default value.
 Depends:

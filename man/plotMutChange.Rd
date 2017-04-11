@@ -53,4 +53,3 @@ plotMutChange(sample.genes.mutect)
 plotMutChange(sample.genes.mutect, silent=FALSE, fill=FALSE)
 }
 }
-

@@ -2,61 +2,60 @@
 % Please edit documentation in R/background.R
 \name{bcgr}
 \alias{bcgr}
-\title{Background mutation rate calculated based on silent mutations.}
+\title{Background mutation rate calculated based on the observed silent mutations.}
 \usage{
 bcgr(sample.mutations, genes = NULL, Variant_Classification = NULL,
   Hugo_Symbol = NULL, Tumor_Sample_Barcode = NULL, CCF = NULL)
 }
 \arguments{
 \item{sample.mutations}{data frame in MAF like format with nonsilent and silent mutations.
-Columns (with exactly same names) which \code{sample.mutations} should have are: 
+Columns names/header in \code{sample.mutations} must be: 
 \itemize{ 
-     \item Variant_Classification column specifed by MAF format, used to distinguish between silent and nonsilent SNVs
-     \item Hugo_Symbol column specifed by MAF format, which reports gene for each SNV.
-     \item Tumor_Sample_Barcode column specifed by MAF format, reporting for each SNV in wich patient was found. 
-     \item CCF numeric column produce by \code{CCF} function.
+     \item Variant_Classification : column specified in the MAF format, which distinguishes between silent and nonsilent SNVs
+     \item Hugo_Symbol : column specified in the MAF format, which reports the gene name for each SNV.
+     \item Tumor_Sample_Barcode : column specified in the MAF format, which reports in wich patient the SNV was found. 
+     \item CCF : numeric column produce by \code{CCF} function, or calculated previously for each SNV.
 }}
 
 \item{genes}{vector of genes which were sequenced. 
-They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV in given cohort).
-Default is NULL value and then list of unique genes is takend from \code{sample.mutations}.}
+Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+Default is NULL value and then list of unique genes is taken from \code{sample.mutations}.}
 
-\item{Variant_Classification}{(optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+\item{Variant_Classification}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs (Silent or not). 
 Default is NULL value (in this case \code{sample.mutations} should already have this column). 
 Column with this name should not already exist in \code{sample.mutations}.}
 
-\item{Hugo_Symbol}{(optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
+\item{Hugo_Symbol}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs.
 Default is NULL value (in this case \code{sample.mutations} should already have this column)
 Column with this name should not already exist in \code{sample.mutations}.}
 
-\item{Tumor_Sample_Barcode}{(optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
+\item{Tumor_Sample_Barcode}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs. 
 Default is NULL value (in this case \code{sample.mutations} should already have this column)
 Column with this name should not already exist in \code{sample.mutations}.}
 
-\item{CCF}{(optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
+\item{CCF}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs. 
 Default is NULL value (in this case \code{sample.mutations} should already have this column)
 Column with this name should not already exist in \code{sample.mutations}.}
 }
 \value{
-a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
+a numeric vector of the probabilities that a gene has a nonsilent mutation (not caused by cancer).
 }
 \description{
-\code{bcgr} function calculates  background probability that gene is mutated based on frequency od silent mutations.
+\code{bcgr} function calculates the background probability that a gene is mutated based on the frequency of silent mutations.
 }
 \details{
-With assumption of neutral selections, function estimates expected number of nonsilent mutations from observed number of silent mutations.
- Na (number of all possible nonsilent substitutions) and Ns (number of all possible silent substitutions) are taken from Lawrence paper.
- They are provdied in this package in file lawrence.RData.
- When expected number of nonsilent mutations for each gene is known, probability to get nonsilent mutation in each gene is calculated.
+Assuming neutral selection, the function estimates the expected number of nonsilent mutations from observed number of silent mutations.
+ Na (number of all possible nonsilent substitutions) and Ns (number of all possible silent substitutions) were taken from Lawrence paper.
+ They are provided in this package in the file lawrence.RData.
+ When the expected number of nonsilent mutations for each gene is known, the probability to get a nonsilent mutation in each gene is calculated.
  This is based on
 }
 \examples{
 \donttest{
-# We first need CCF column
+# We first need the CCF column
 sample.genes.mutect <- CCF(sample.genes.mutect)
 somatic.background <- bcgr(sample.genes.mutect, length.genes$Hugo_Symbol)
 head(somatic.background)
 }
 }
 \keyword{background}
-

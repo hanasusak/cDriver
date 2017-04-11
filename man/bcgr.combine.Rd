@@ -2,7 +2,7 @@
 % Please edit documentation in R/background.R
 \name{bcgr.combine}
 \alias{bcgr.combine}
-\title{Combining two somatic background mutation probability, outputs of functions bcgr.lawrence and bcgr}
+\title{Combining two somatic background mutation probability values (obtained from functions bcgr.lawrence and bcgr)}
 \usage{
 bcgr.combine(sample.mutations, genes = NULL, lengthGenes = NULL,
   Variant_Classification = NULL, Hugo_Symbol = NULL,
@@ -10,43 +10,43 @@ bcgr.combine(sample.mutations, genes = NULL, lengthGenes = NULL,
 }
 \arguments{
 \item{sample.mutations}{data frame in MAF like format.
-Columns (with exactly same names) which \code{sample.mutations} should have are: 
+Columns names/header in \code{sample.mutations} must be: e: 
 \itemize{ 
-     \item Variant_Classification column specifed by MAF format, used to distinguish between silent and nonsilent SNVs
-     \item Hugo_Symbol column specifed by MAF format, which reports gene for each SNV.
-     \item Tumor_Sample_Barcode column specifed by MAF format, reporting for each SNV in wich patient was found. 
-     \item CCF numeric column produce by \code{CCF} function.
+     \item Variant_Classification : column specified in the MAF format, which distinguishes between silent and nonsilent SNVs
+     \item Hugo_Symbol : column specified in the MAF format, which reports the gene name for each SNV.
+     \item Tumor_Sample_Barcode : column specified in the MAF format, which reports in wich patient the SNV was found. 
+     \item CCF : numeric column produce by \code{CCF} function, or calculated previously for each SNV.
 }}
 
 \item{genes}{vector of genes which were sequenced. 
-They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV in given cohort).
-Default is NULL value and then list of unique genes is takend from \code{sample.mutations}.}
+Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+Default is NULL value and then the list of the unique genes is taken from \code{sample.mutations}.}
 
-\item{lengthGenes}{numeric vector of lengths (suquenced) for \code{genes}. Should be given in same order as variable genes.
-#' Default is NULL value and then Length of genes is taken from data set \code{length.genes} (form package \code{cDriver}) as column Length. 
-If gene is not found in this data frame, then median value is taken from listed genes in this data frame.}
+\item{lengthGenes}{numeric vector of the lengths (suquenced) for all \code{genes}. Vector should have the same order as given in the variable genes.
+Default is NULL value and then the length of the genes is taken from data set \code{length.genes} (form package \code{cDriver}) as defined in column length. 
+If a gene is not found in this data frame, then the median value is taken from the gene list provided by default.}
 
-\item{Variant_Classification}{(optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+\item{Variant_Classification}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs (Silent or not). 
+Default is NULL value (in this case \code{sample.mutations} should already have this column). 
+Column with this name should not already exist in \code{sample.mutations}.}
+
+\item{Hugo_Symbol}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs.
 Default is NULL value (in this case \code{sample.mutations} should already have this column)
 Column with this name should not already exist in \code{sample.mutations}.}
 
-\item{Hugo_Symbol}{(optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs.
+\item{Tumor_Sample_Barcode}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs. 
 Default is NULL value (in this case \code{sample.mutations} should already have this column)
 Column with this name should not already exist in \code{sample.mutations}.}
 
-\item{Tumor_Sample_Barcode}{(optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs. 
-Default is NULL value (in this case \code{sample.mutations} should already have this column)
-Column with this name should not already exist in \code{sample.mutations}.}
-
-\item{CCF}{(optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs. 
+\item{CCF}{(optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs. 
 Default is NULL value (in this case \code{sample.mutations} should already have this column)
 Column with this name should not already exist in \code{sample.mutations}.}
 }
 \value{
-a named numeric vector of probabilites that gene has nonsilent mutation (not caused by cancer).
+a numeric vector of the probabilites that a gene has a nonsilent mutation (not caused by cancer).
 }
 \description{
-\code{bcgr.combine} function calculates both somatic background mutation probabilities (using bcgr.lawrence and bcgr functions) and take average value for each gene
+\code{bcgr.combine} function first calculates both somatic background mutation probabilities (using bcgr.lawrence and bcgr functions) and then it takes the average value for each gene
 }
 \examples{
 # First we need to calculate CCF
@@ -59,4 +59,3 @@ sample.genes.mutect <- CCF(sample.genes.mutect)
 \url{http://www.ncbi.nlm.nih.gov/pubmed/23770567}.
 }
 \keyword{Lawrence}
-

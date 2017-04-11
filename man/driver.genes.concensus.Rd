@@ -12,4 +12,3 @@ all.genes.lengths
 This charachter vector containes 544 cammon cancer genes.
 }
 \keyword{data}
-

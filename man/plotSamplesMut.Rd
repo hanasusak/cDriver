@@ -50,4 +50,3 @@ plotSamplesMut(sample.genes.mutect)
 plotSamplesMut(sample.genes.mutect, indels=FALSE, fill=TRUE)
 }
 }
-
