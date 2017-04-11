@@ -59,7 +59,7 @@ exonic.only <- function(sample.mutations, Variant_Classification=NULL){
 
 
 
-#' Background mutation rate calculated based on the observed silent mutations.
+#' Background mutation rate estimated from the observed silent mutations.
 #' @description
 #'   \code{bcgr} function calculates the background probability that a gene is mutated based on the frequency of silent mutations.
 #' @param sample.mutations data frame in MAF like format with nonsilent and silent mutations.  
@@ -209,7 +209,7 @@ bcgr <- function(sample.mutations, genes=NULL, Variant_Classification=NULL, Hugo
     
 }
 
-#' Background mutation rate based on Lawrence's background mutation rate estimated on a cohort of different cancers.
+#' Background mutation rate based on the published Lawrence's bmr estimates. The bmr for each gene was estimated from a cohort of different tumors. 
 #' @description
 #'   \code{bcgr.lawrence} function calculates the background probability that a gene is mutated based on the background somatic mutation rate 
 #'   provided in the Lawrence paper.
@@ -374,7 +374,7 @@ bcgr.lawrence <- function(sample.mutations, genes=NULL, lengthGenes=NULL, Varian
     gene.mutated.if.healthy  
 }
 
-#' Combining two somatic background mutation probability values (obtained from functions bcgr.lawrence and bcgr)
+#' Combining two somatic background mutation probability values (usually obtained from functions bcgr.lawrence and bcgr)
 #' @description
 #'   \code{bcgr.combine} function first calculates both somatic background mutation probabilities (using bcgr.lawrence and bcgr functions) and then it takes the average value for each gene
 #' @param sample.mutations data frame in MAF like format.  

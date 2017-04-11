@@ -204,37 +204,42 @@ pat.vs.genes <- function (sample.mutations, genes = NULL, valueCol = NULL, Hugo_
 }
 
 
-#' Bayesina risk inference model.
+#' Bayesian 'risk' inference model.
 #' @description
-#'   \code{bayes.risk} function performs by runing Bayesian risk inference model when priors are set by user and liklihood is calculated from given data of SNVs/InDels.
-#' @param sample.mutations data frame with SNVs and InDels in MAF like format.  
-#' Columns (with exactly same names) which \code{sample.mutations} should have are: 
+#'   \code{bayes.risk} function runs a Bayesian inference model based on cancer versus healthy population model. The priors are set by the user or can be  the likelihood is calculated from the data of SNVs/InDels.
+#' @param sample.mutations data frame in MAF like format with nonsilent and silent mutations.  
+#' Columns names/header in \code{sample.mutations} must be: 
 #' \itemize{ 
-#'      \item Variant_Classification column specifed by MAF format, used to distinguish between silent and nonsilent SNVs
-#'      \item Hugo_Symbol column specifed by MAF format, which reports gene for each SNV.
-#'      \item Tumor_Sample_Barcode column specifed by MAF format, reporting for each SNV in wich patient was found. 
-#'      \item CCF numeric column produce by \code{CCF} function.
+#'      \item Variant_Classification : column specified in the MAF format, which distinguishes between silent and nonsilent SNVs
+#'      \item Hugo_Symbol : column specified in the MAF format, which reports the gene name for each SNV.
+#'      \item Tumor_Sample_Barcode : column specified in the MAF format, which reports in wich patient the SNV was found. 
+#'      \item CCF : numeric column produce by the \code{CCF} function, or calculated previously for each SNV.
 #'      \item Damage_score numeric column with values between 0 and 1, where 1 means very damaging SNV/IndDel and 0 not damaging SNV/InDel
 #' } 
-#' @param bcgr.prob a numeric vector, same lenght as genes (should be same orderd also) which gives probability of gene having somatic mutation in healfy population.
-#'          There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence} and \code{bcgr.combine}.
-#' @param genes vector of genes which were sequenced. 
-#' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.
-#' @param prior.sick a numeric value representing incidence of tumor in population. Set by default to 0.0045 .
-#' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+#' @param bcgr.prob A numeric vector. It must have the same length and order as the genes vector. It indicates the probability of a gene having a somatic mutation in the healthy population.
+#'        There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence} and \code{bcgr.combine}.
+#' @param prior.sick A numeric value representing the incidence of tumor in the population. Set by default to 0.0045.
+#' @param genes  (optional) vector of genes which were sequenced. 
+#'      Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+#'      Default is NULL value and then list of unique genes is taken from \code{sample.mutations}.
+#' @param Variant_Classification (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs/Indels (Silent or not). 
+#'      Default is NULL value (in this case \code{sample.mutations} should already have this column). 
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Hugo_Symbol (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs/Indels.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs/Indels.
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs/Indels. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs/Indels. 
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param CCF (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs/Indels. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs/Indels. 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param Damage_score (optional) integer/numeric value indicating column in \code{sample.mutations} which contain damage score for SNVs/Indels. 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param mode a charechter value indicationg how to solve when in one gene-sample pair there are multiple mutations. Options are SUM, MAX and ADVANCE
-#' @param epsilon a numeric value. If mode is ADVANCE, epsilone value will be threshold for CCF difference to decide if they are in same or different clone. 
-#' @return a data frame with ranked genes by posteriory probability of gene beeing risk factor for developing tumor. 
-#' Additional columns with usefull info are contained in data frame.
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Damage_score (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the damage score for the SNVs/Indels. 
+#'        Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#' @param mode A character value indicating how to solve when in one gene-sample pair there are multiple mutations. Options are SUM, MAX and ADVANCE
+#' @param epsilon A numeric value. If mode is ADVANCE, epsilone value will be the threshold for CCF difference to decide if they are in the same or in a different clone. 
+#' @return a data frame with ranked genes ordered the by posterior probability of the gene being a risk factor for developing tumor. 
+#' Additional columns with useful info are contained in the data frame.
 #' @seealso \code{\link{bcgr}}, \code{\link{bcgr.lawrence}}  and \code{\link{bcgr.combine}} for obtaining bcgr.prob variable.
 #' @keywords risk
 #' @examples 
@@ -363,9 +368,10 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
 }
 
 
-#' Bayesina risk inference model.
+#' Bayesian 'driver' inference model.
 #' @description
-#'   \code{bayes.driver} function performs by runing Bayesian driver inference model where each observed mutation in gene is taken as proof for being true driver.
+#'   \code{bayes.driver} function runs a Bayesian inference model based on a driver versus passenger model.  Each observed mutation in the gene is taken as a proof for being a true driver. 
+#'   The priors can be set or the function will take some default values.
 #' @param sample.mutations data frame with SNVs and InDels in MAF like format.  
 #' Columns (with exactly same names) which \code{sample.mutations} should have are: 
 #' \itemize{ 
@@ -375,29 +381,34 @@ bayes.risk <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.sick = 0.
 #'      \item CCF numeric column produce by \code{CCF} function.
 #'      \item Damage_score numeric column with values between 0 and 1, where 1 means very damaging SNV/IndDel and 0 not damaging SNV/InDel
 #' } 
-#' @param bcgr.prob a numeric vector, same lenght as genes (should be same orderd also) which gives probability of gene having somatic mutation in healfy population.
-#'          There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence} and \code{bcgr.combine}.
-#' @param genes a vector of genes which were sequenced. 
-#' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort). Default NULL.
-#' @param prior.driver a numeric value representing prior probability that random gene is dirver. 
-#'          Default is set to \code{length(driver.genes)}/20000, as it assumed there is ~20000 protein goding genes.
-#' @param gene.mut.driver a numeric value or named vector representing likelihood that gene is mutated if it is knowen to be driver. 
-#'          Gene does not need to be mutated if it is driver, as cancers are heterogenious. Default is set to NULL and driver.genes are considered as drivers.
-#' @param driver.genes a character vector of genes which are considered as drivers for this cancer. If NULL then used set is \code{driver.genes.concensus}.
-#' @param Variant_Classification (optional) integer/numeric value indicating column in \code{sample.mutations} which contain classification for SNV (Silent or not). 
+#' @param bcgr.prob A numeric vector. It must have the same length and order as the genes vector. It indicates the probability of a gene having a somatic mutation in the healthy population.
+#'        There are functions for obtaining this vector: \code{bcgr}, \code{bcgr.lawrence} and \code{bcgr.combine}.
+#' @param prior.driver A numeric value representing the prior probability that a random gene is a driver. 
+#'        Default is set to \code{length(driver.genes)}/20000, as the human genome has ~20000 protein coding genes.
+#' @param gene.mut.driver A numeric value or named vector representing the likelihood that a gene is mutated if it is a known/published driver gene. 
+#'       The gene does not need to be mutated if it is a driver, as cancers are heterogenous. Default is set to NULL and driver.genes are the genes considered as drivers.
+#' @param driver.genes A character vector of genes which are considered as drivers for this cancer. If NULL then the used set is \code{driver.genes.concensus}.
+#' @param genes  (optional) vector of genes which were sequenced. 
+#'      Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+#'      Default is NULL value and then list of unique genes is taken from \code{sample.mutations}.
+#' @param Variant_Classification (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the classification for the SNVs/Indels (Silent or not). 
+#'      Default is NULL value (in this case \code{sample.mutations} should already have this column). 
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Hugo_Symbol (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the gene names for the SNVs/Indels.
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param Hugo_Symbol (optional) integer/numeric value indicating column in \code{sample.mutations} having gene names for reported SNVs/Indels.
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the sample ids for the SNVs/Indels. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param Tumor_Sample_Barcode (optional) integer/numeric value indicating column in \code{sample.mutations} which have sample ids for SNVs/Indels. 
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param CCF (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the cancer cell fraction information for the SNVs/Indels. 
 #'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param CCF (optional) integer/numeric value indicating column in \code{sample.mutations} which have cancer cell fraction information for SNVs/Indels. 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param Damage_score (optional) integer/numeric value indicating column in \code{sample.mutations} which contain damage score for SNVs/Indels. 
-#'      Default is NULL value (in this case \code{sample.mutations} should already have this column)
-#' @param mode a charechter value indicationg how to solve when in one gene-sample pair there are multiple mutations. Options are SUM, MAX and ADVANCE
-#' @param epsilon a numeric value. If mode is ADVANCE, epsilone value will be threshold for CCF difference to decide if they are in same or different clone. 
-#' @return a data frame with ranked genes by posteriory probability of gene beeing true driver. 
-#' Additional columns with usefull info are contained in data frame.
+#'      Column with this name should not already exist in \code{sample.mutations}.
+#' @param Damage_score (optional) integer/numeric value indicating which column in \code{sample.mutations} contains the damage score for the SNVs/Indels. 
+#'        Default is NULL value (in this case \code{sample.mutations} should already have this column)
+#' @param mode a character value indicating how to solve when in one gene-sample pair there are multiple mutations. Options are SUM, MAX and ADVANCE
+#' @param epsilon a numeric value. If mode is ADVANCE, epsilon value will be the threshold for the CCF difference to decide if they are in the same or a different clone. 
+#' @return a data frame with ranked genes ordered the by posterior probability of the gene being a mutational driver gene.
+#' Additional columns with useful info are contained in the data frame.
 #' @seealso \code{\link{bcgr}}, \code{\link{bcgr.lawrence}}  and \code{\link{bcgr.combine}} for obtaining bcgr.prob variable.
 #' @keywords risk
 #' @examples 
@@ -623,14 +634,15 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
 
 #' Combining mulitple methods for ranking genes.
 #' @description
-#'   \code{combine.ranking} function combines mulitple rankings to one final. All the rankings takes the same importans for final decision.
-#' @param rankings a list containing at least two elements, first one data frame output of bayes.risk and second  data frame output of bayes.driver functions.  
-#'          All next elements of the list, should be named numeric vectors, where nemas are Hugo_Symbol and value represent any score where higer values are scoring better for gene to be driver.
-#' @param genes a vector of genes which were sequenced/analysed. 
-#' They should be unique values of Hugo_Symbol column (with possibility of more additional genes which did not have any SNV/Indel. in given cohort).
-#' @param min.mut a numeric value, threshold for filtering genes based on minimum number of nonsilent mutations.
-#' @return a data frame with ranked genes by combining different methods ranking. 
-#' Additional columns with usefull info are contained in resulting data frame also.
+#'   \code{combine.ranking} function combines multiple rankings and gives a final rank to each gene.   
+#' @param rankings A list containing at least two elements. The first two elements should be the two data frames produced by the bayes.risk and the bayes.driver functions.  
+#'        All the next elements of the list, must be named numeric vectors, where the names are the Hugo_Symbol and the value is the rank given to the each gene.
+#' @param genes  (optional) vector of genes which were sequenced. 
+#'      Vector of unique values of Hugo_Symbol names (with possibility of more additional genes which did not have any SNV in the cohort).
+#'      Default is NULL value and then list of unique genes is taken from \code{sample.mutations}.
+#' @param min.mut a numeric value, threshold for filtering genes based on a minimum number of nonsilent mutations.
+#' @return a data frame with ranked genes ordered the by the combination of two or more list of ranked genes.
+#'        Additional columns with useful info are contained in the data frame.
 #' @seealso \code{\link{bayes.risk}}, \code{\link{bayes.driver}}   for obtaining bayes.risk.rank and bayes.driver.rank variables.
 #' @keywords combine
 # @examples 
