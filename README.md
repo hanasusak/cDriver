@@ -3,7 +3,7 @@ cDriver R package for finding candidate driver genes in cancers. To be able to u
 
 Current version is a *Beta* version. We will regularly improve this package based on a users comments.
 
-Manuscript for cDriver is in preparation, and as soon it is online available we will provide a link.
+Manuscript for cDriver is in submition process, and we have preprent at bioRxiv: http://biorxiv.org/content/early/2017/04/13/059360.
 
 
 # Installation from R
