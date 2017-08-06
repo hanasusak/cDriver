@@ -552,7 +552,8 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
     }
         
     # 
-    ind <- (gene.mut.if.driver[genes]^n[genes] == 0 ) | (gene.notmut.if.driver[genes]^m[genes] == 0) |  (gene.mut.if.passenger[genes]^n[genes] == 0) |  (gene.notmut.if.passenger[genes]^m[genes] == 0)
+    #ind <- (gene.mut.if.driver[genes]^n[genes] == 0 ) | (gene.notmut.if.driver[genes]^m[genes] == 0) |  (gene.mut.if.passenger[genes]^n[genes] == 0) |  (gene.notmut.if.passenger[genes]^m[genes] == 0)
+    ind <- sapply(genes, function(x) ((gene.mut.if.driver[x]^n[x] == 0) | (gene.notmut.if.driver[x]^m[x] ==   0) | (gene.mut.if.passenger[x]^n[x] == 0) | (gene.notmut.if.passenger[x]^m[x] ==   0)))
     if (sum(ind)){
         genes1 <- genes[!ind] 
         genes2 <- genes[ind]  
@@ -563,7 +564,7 @@ bayes.driver <- function(sample.mutations,  bcgr.prob, genes=NULL, prior.driver 
         
     
         # only to be able to run as Rscript
-        requireNamespace(methods)
+        requireNamespace('methods')
         
         gene.driver.given.patients2 <- (prior.driver * mpfr(gene.mut.if.driver[genes2], precBits = 128)^n[genes2] * mpfr(gene.notmut.if.driver[genes2], precBits = 128)^m[genes2])/
             ( (prior.driver* mpfr(gene.mut.if.driver[genes2], precBits = 128)^n[genes2]*mpfr(gene.notmut.if.driver[genes2], precBits = 128)^m[genes2])+
